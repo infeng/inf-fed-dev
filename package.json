@@ -1,0 +1,45 @@
+{
+  "name": "inf-fed-dev",
+  "version": "1.0.0",
+  "description": "frontend dev boilerplate",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "tsc"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/infeng/inf-fed-dev.git"
+  },
+  "bin": {
+    "inf": "./bin/index.js"
+  },
+  "keywords": [
+    "frontend",
+    "dev",
+    "react",
+    "typescript"
+  ],
+  "author": "infeng",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/infeng/inf-fed-dev/issues"
+  },
+  "homepage": "https://github.com/infeng/inf-fed-dev#readme",
+  "dependencies": {
+    "bluebird": "^3.4.7",
+    "commander": "^2.9.0",
+    "ejs": "^2.5.5",
+    "ncp": "^2.0.0",
+    "typescript": "^2.1.4",
+    "vinyl-fs": "^2.4.4"
+  },
+  "files": [
+    "bin",
+    "lib",
+    "templates"
+  ],
+  "devDependencies": {
+    "@types/node": "^6.0.53"
+  }
+}
