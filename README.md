@@ -20,7 +20,7 @@ $ npm start
 
 we have 1 commands: `react`.
 
-### inf react <appName>
+### inf react &#60;appName&#62; [options]
 
 create a simple react app.
 
