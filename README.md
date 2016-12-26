@@ -29,3 +29,7 @@ create a simple react app.
 ```bash
 inf react my-app
 ```
+
+#### options
+
+* `--no-install` -- Disable npm install after files created

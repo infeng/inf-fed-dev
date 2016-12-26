@@ -7,9 +7,11 @@ let createReact = require('../lib/createReact').default;
 program
 .description('create react-typescript-boilerplate')
 .command('react <name>')
+.option('--no-install', 'Disable npm install after files created')
 .action(function(name, options){
+  const { install } = options;
   console.log(`create react-app ${name}`);
-  createReact(name);
+  createReact(name, install);
 });
 
 program.parse(process.argv);

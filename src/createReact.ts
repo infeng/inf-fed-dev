@@ -9,7 +9,7 @@ let writeFile = Promise2.promisify(fs.writeFile);
 import * as vfs from 'vinyl-fs';
 import * as common from './common';
 
-async function run(appName) {
+async function run(appName, install) {
   const appFolder = path.join(process.cwd(), appName);
   console.log(`start create a react boilerplate in ${appFolder}`);
   if (!await common.existFile(appFolder)) {
@@ -32,9 +32,17 @@ async function run(appName) {
   });
   let packageJsonPath = path.join(dest, 'package.json');
   await writeFile(packageJsonPath, content);
-  common.install(() => {
-    console.log('create react app success');
-  });
+  if (install) {
+    common.install(() => {
+      success();
+    });
+  }else {
+    success();
+  }
+}
+
+function success() {
+  console.log('create react app success');
 }
 
 export default run;

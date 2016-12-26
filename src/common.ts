@@ -14,6 +14,7 @@ export async function existFile(dir) {
 export function install(done) {
   console.log('run npm install');
   runCmd('npm', ['install'], function () {
+    console.log('npm install end');
     done();
   });  
 }
