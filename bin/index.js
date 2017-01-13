@@ -9,7 +9,7 @@ program
 .command('react <name>')
 .option('--no-install', 'Disable npm install after files created')
 .action(function(name, options){
-  const { install } = options;
+  var install = options.install;
   console.log(`create react-app ${name}`);
   createReact(name, install);
 });
