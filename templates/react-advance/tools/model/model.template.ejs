@@ -1,0 +1,32 @@
+import { initAction } from '../util/action';
+import { handleActions } from 'redux-actions';
+
+let modelName = '<%= modelName %>';
+
+// simple actions
+
+export let keys = {
+  changeName: 'changeName',
+};
+
+const simpleActions = initAction(keys, modelName);
+
+export const actionNames = simpleActions.actionNames;
+export const actions = simpleActions.actions;
+
+// reducers
+
+export interface <%= componentName %>State {
+  name: string;
+};
+
+export const reducer = handleActions<<%= componentName %>State, any>({
+  [actionNames[keys.changeName]](state, action) {
+    return {
+      ...state,
+      name: action.payload.name,
+    };
+  },
+}, {
+  name: '',
+});
