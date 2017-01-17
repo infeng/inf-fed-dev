@@ -41,7 +41,7 @@ create a advance react app.
 #### Usage Examples
 
 ```bash
-inf react my-app
+inf react-advance my-app
 ```
 
 #### options
