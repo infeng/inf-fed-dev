@@ -88,7 +88,7 @@ function makeRequest(basePath: string, api: ApiConfig) {
     }
     let upperCaseMethod = method.toUpperCase();
     if (upperCaseMethod === 'GET') {
-      let query = querystring.stringify(data);;
+      let query = querystring.stringify(data);
       if (query) {
         uri += '?' + query;
       }
@@ -165,7 +165,9 @@ function redirect(actionNames: ApiActionNames, apiSaga: any, redirectPath: strin
     while (true) {
       const req = yield take(actionNames.request);
       yield call(apiSaga, req);
-      yield put(browserHistory.push(redirectPath));
+      browserHistory.push({
+        pathname: redirectPath,
+      });
     }
   };
 }

@@ -23,5 +23,3 @@ let render = () => {
 };
 
 render();
-
-
