@@ -3,7 +3,7 @@
 
 var program = require('commander');
 let createReact = require('../lib/createReact').default;
-let createAdvanceReact = require('../lib/createReact.advance').default;
+let createFullReact = require('../lib/createReact.full').default;
 
 program
 .description('create react-typescript-boilerplate')
@@ -17,12 +17,12 @@ program
 
 program
 .description('create react-typescript-redux-saga-boilerplate')
-.command('react-advance <name>')
+.command('react-full <name>')
 .option('--no-install', 'Disable npm install after files created')
 .action(function(name, options){
   var install = options.install;
-  console.log(`create react-advance-app ${name}`);
-  createAdvanceReact(name, install);
+  console.log(`create react-full-app ${name}`);
+  createFullReact(name, install);
 });
 
 program.parse(process.argv);

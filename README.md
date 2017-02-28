@@ -18,7 +18,7 @@ $ npm start
 
 ## Commands
 
-we have 2 commands: `react`, `react-advance`.
+we have 2 commands: `react`, `react-full`.
 
 ### inf react &#60;appName&#62; [options]
 
@@ -34,14 +34,14 @@ inf react my-app
 
 * `--no-install` -- Disable npm install after files created
 
-### inf react-advance &#60;appName&#62; [options]
+### inf react-full &#60;appName&#62; [options]
 
-create a advance react app.
+create a full react app.
 
 #### Usage Examples
 
 ```bash
-inf react-advance my-app
+inf react-full my-app
 ```
 
 #### options

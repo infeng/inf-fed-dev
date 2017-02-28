@@ -11,14 +11,14 @@ import * as common from './common';
 
 async function run(appName, install) {
   const appFolder = path.join(process.cwd(), appName);
-  console.log(`start create a advance react boilerplate in ${appFolder}`);
+  console.log(`start create a full react boilerplate in ${appFolder}`);
   if (!await common.existFile(appFolder)) {
     return console.error('Existing files here, please run this command in an empty folder!');
   }
   await mkdir(appFolder);
   process.chdir(appFolder);
   const dest = process.cwd();
-  const templateFolder = path.join(__dirname, '../templates/react-advance');
+  const templateFolder = path.join(__dirname, '../templates/react-full');
   console.log(templateFolder);
   // // copy files exclude package.json
   vfs.src(['**/*', '!package.json'], {cwd: templateFolder, cwdbase: true, dot: true})
@@ -42,7 +42,7 @@ async function run(appName, install) {
 }
 
 function success() {
-  console.log('create advance react app success');
+  console.log('create full react app success');
 }
 
 export default run;
