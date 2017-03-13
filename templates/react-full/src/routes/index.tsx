@@ -5,7 +5,7 @@ import { Router, Route, browserHistory } from 'react-router';
 import App from '../containers/App';
 
 let routes = (history) => (
-  <Router history={browserHistory} >
+  <Router history={history} >
     <Route path="/" component={App} />
   </Router>
 );
