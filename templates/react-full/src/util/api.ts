@@ -4,6 +4,11 @@ import xFetch from './xFetch';
 import { browserHistory } from 'react-router';
 import * as querystring from 'querystring';
 
+interface Redirect {
+  componentName: string;
+  message?: string;
+}
+
 export interface ApiConfig {
   /** 
    * path (also use as action name)
@@ -20,7 +25,7 @@ export interface ApiConfig {
   /**
    * Determine whether redirect other route when request success
    */
-  redirect?: string;
+  redirect?: Redirect;
   /** 
    * custom action name
    */
@@ -61,12 +66,12 @@ export function initApi<T>(basePath, configs: ApiConfig[], modelName: string): A
     if (config.customSaga) {
       return;
     }
+    if (config.redirect) {
+      return sagas.push(redirect(apiActionNames[path], effect, config.redirect));
+    }
     let path = config.displayPath || config.path;
     if (config.message) {
       return sagas.push(message(apiActionNames[path], effect, config.message));
-    }
-    if (config.redirect) {
-      return sagas.push(redirect(apiActionNames[path], effect, config.redirect));
     }
     sagas.push(simple(apiActionNames[path], effect));
   });
@@ -155,18 +160,19 @@ function message(actionNames: ApiActionNames, apiSaga: any, message: string | bo
       if (typeof message === 'string') {
         showMessage = message;
       }
-      alert(showMessage);
+      console.log(showMessage);
     }
   };
 }
 
-function redirect(actionNames: ApiActionNames, apiSaga: any, redirectPath: string) {
+function redirect(actionNames: ApiActionNames, apiSaga: any, redirectObj: Redirect) {
   return function* () {
     while (true) {
       const req = yield take(actionNames.request);
       yield call(apiSaga, req);
+      console.log(redirectObj.message || 'request success');
       browserHistory.push({
-        pathname: redirectPath,
+        pathname: redirectObj.componentName,
       });
     }
   };
