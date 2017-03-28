@@ -1,0 +1,18 @@
+@import "../../../style/index.less";
+
+@prefix-cls: ~"@{base-prefix}-header";
+
+@menu-item-color: white;
+
+.@{prefix-cls} {
+  border-bottom: none;
+  min-width: @min-width;
+
+  & > .ant-menu-item {
+    color: @menu-item-color;
+  }
+
+  &-item-right.ant-menu-item {
+    float: right;
+  }
+}

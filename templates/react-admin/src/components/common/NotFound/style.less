@@ -1,0 +1,31 @@
+@import "../../../style/index.less";
+
+@prefix-cls: ~"@{base-prefix}-not-found";
+
+.@{prefix-cls} {
+  position: relative;
+  top: 50%;
+  height: 200px;
+  width: 600px;
+  margin: 0 auto;
+  text-align: center;
+  margin-top: -200px;  
+
+  &-title {
+    font-size: 80px;
+  }
+
+  &-btn {
+    margin-top: 3px;
+    padding: 6px 12px;
+    background-color: #108ee9;
+    border: none;
+    border-radius: 3px;
+    color: white;
+    cursor: pointer;
+
+    &:hover {
+      background-color: black;
+    }
+  }
+}

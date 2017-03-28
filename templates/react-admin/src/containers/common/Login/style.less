@@ -1,0 +1,40 @@
+@import "../../../style/index.less";
+
+@prefix-cls: ~"@{base-prefix}-login";
+
+.@{prefix-cls} {
+  &-container {
+    padding-left: 30%;
+    padding-right: 30%;
+    height: 35%;
+    width: 100%;
+    background: #404040;
+  }
+
+  &-card{
+    height: auto;
+    position: absolute;
+    top: 25%;
+    left: 50%;
+    margin-left: -225px;
+    width: 450px;
+    overflow: visible;
+    padding: 0 36px;
+    justify-content: center;
+    align-items: center;
+  }
+
+  &-btn {
+    width: 100%;
+  }
+
+  &-title {
+    position: relative;
+    color: #fff;
+    font-size: 4em !important;
+    font-weight: bold;
+    margin-top:0px;
+    top: 25%;
+    text-align:center;
+  }
+}

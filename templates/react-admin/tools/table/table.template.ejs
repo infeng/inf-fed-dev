@@ -1,0 +1,79 @@
+import * as React from 'react';
+import { connect } from 'react-redux';
+import { TokenState } from '../../../models/common/token';
+import UniTable, { TableColumnConfig, ToolbarButtonDecorator } from '../../common/UniTable';
+import { <%= componentName %>State, apiActions, apis } from '../../../models/system/<%= modelName %>';
+import { updatePane } from '../../../models/common/sidebar';
+
+export interface <%= componentName %>Props {
+  token: TokenState;
+  data: <%= componentName %>State;
+  dispatch: any;
+}
+
+class <%= componentName %> extends React.Component<<%= componentName %>Props, any> {
+  render() {
+    const { data, dispatch } = this.props;
+
+    const columns: TableColumnConfig<any>[] = [{
+      title: 'id',
+      dataIndex: 'id',
+    }, {
+      title: '角色名称',
+      dataIndex: 'roleName',
+    }, {
+      title: '创建时间',
+      dataIndex: 'createTime',
+    }, {
+      title: '操作',
+      dataIndex: 'actions',
+      render: (text, record, index) => {
+        return (
+          <div
+            className="action-container"
+          >
+            <a
+              onClick={() => {
+                updatePane(dispatch, 'EditRole', {
+                  id: record.id,
+                  roleName: record.roleName,
+                });
+              }}
+            >
+              编辑
+            </a>
+          </div>
+        );
+      },
+    }];
+
+    const toolbarButtons: ToolbarButtonDecorator[] = [{
+      key: 'plus',
+      type: 'primary',
+      onClick: () => {
+        updatePane(dispatch, 'EditRole');
+      },
+      enableForAll: true,
+      text: '添加角色',
+    }];
+
+    return (
+      <UniTable
+        columns={columns}
+        apiAction={apiActions[apis.get<%= componentName %>]}
+        tableState={data}
+        toolbarButtons={toolbarButtons}
+        hasToolbar={true}
+      />
+    );
+  }
+}
+
+const mapState2Props = state => {
+  const { token, <%= modelName %> } = state;
+  return {
+    token,
+    data: <%= modelName %>,
+  };
+};
+export default connect(mapState2Props)(<%= componentName %>);
