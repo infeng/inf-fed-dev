@@ -27,13 +27,17 @@ export interface ApiConfig {
    */
   redirect?: Redirect;
   /** 
-   * custom action name
+   * action name
    */
-  displayPath?: string;
+  actionName: string;
   /**
    * Determine whether custom saga.
    */
   customSaga?: boolean;
+  /**
+   * custom model name
+   */
+  modelName?: string;
 }
 
 export interface ApiActionNames {
@@ -54,11 +58,9 @@ export function initApi<T>(basePath, configs: ApiConfig[], modelName: string): A
   let sagas = [];
 
   configs.forEach(config => {
-    let truePath = config.path;
-    if (config.displayPath) {
-      truePath = config.displayPath;
-    }
-    let actionNames = makeActionNames(modelName, config);
+    let finalModelName = config.modelName || modelName;
+    let truePath = config.actionName;
+    let actionNames = makeActionNames(finalModelName, config);
     apiActionNames[truePath] = actionNames;
     apiActions[truePath] = createAction(actionNames.request);
     let request = makeRequest(basePath, config);
@@ -67,13 +69,12 @@ export function initApi<T>(basePath, configs: ApiConfig[], modelName: string): A
       return;
     }
     if (config.redirect) {
-      return sagas.push(redirect(apiActionNames[path], effect, config.redirect));
+      return sagas.push(redirect(apiActionNames[truePath], effect, config.redirect));
     }
-    let path = config.displayPath || config.path;
     if (config.message) {
-      return sagas.push(message(apiActionNames[path], effect, config.message));
+      return sagas.push(showMessage(apiActionNames[truePath], effect, config.message));
     }
-    sagas.push(simple(apiActionNames[path], effect));
+    sagas.push(simple(apiActionNames[truePath], effect));
   });
 
   return {
@@ -151,7 +152,7 @@ function simple(actionNames: ApiActionNames, apiSaga: any) {
   };
 }
 
-function message(actionNames: ApiActionNames, apiSaga: any, message: string | boolean) {
+function showMessage(actionNames: ApiActionNames, apiSaga: any, message: string | boolean) {
   return function* () {
     while (true) {
       const req = yield take(actionNames.request);

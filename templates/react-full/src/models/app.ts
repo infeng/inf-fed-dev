@@ -22,7 +22,8 @@ let apis = {
 };
 
 let apiConfigs: ApiConfig[] = [{
-  path: apis.getName,
+  path: 'getName',
+  actionName: apis.getName,
 }];
 
 const api = initApi<typeof apis>('', apiConfigs, modelName);
