@@ -1,7 +1,7 @@
 import * as React from 'react';
 import Welcome from '../components/Welcome';
 import { connect } from 'react-redux';
-import { apis, keys, AppState, actions, apiActions } from '../models/app';
+import { AppState, actions, apiActions } from '../models/app';
 
 export interface AppProps {
   dispatch: any;
@@ -10,11 +10,11 @@ export interface AppProps {
 
 class App extends React.Component<AppProps, any> {
   componentDidMount() {
-    this.props.dispatch(apiActions[apis.getName]({}));
+    this.props.dispatch(apiActions.getName({}));
   }
 
   handleChangeName(name) {
-    this.props.dispatch(actions[keys.changeName]({
+    this.props.dispatch(actions.changeName({
       name: name,
     }));
   }

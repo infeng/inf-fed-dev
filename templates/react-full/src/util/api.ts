@@ -1,4 +1,4 @@
-import { createAction } from 'redux-actions';
+import { createAction, ActionFunctionAny, Action } from 'redux-actions';
 import { call, put, take } from 'redux-saga/effects';
 import xFetch from './xFetch';
 import { browserHistory } from 'react-router';
@@ -37,15 +37,15 @@ export interface ApiActionNames {
   error: string;
 }
 
-export interface Api {
-  apiActionNames: {[key: string]: ApiActionNames};
-  apiActions: any;
+export interface Api<T> {
+  apiActionNames: {[key in keyof T]: ApiActionNames};
+  apiActions: {[key in keyof T]: ActionFunctionAny<Action<{}>>};
   sagas: any[];
 }
 
-export function initApi(basePath, configs: ApiConfig[], modelName: string): Api {
-  let apiActionNames = {};
-  let apiActions = {};
+export function initApi<T>(basePath, configs: ApiConfig[], modelName: string): Api<T> {
+  let apiActionNames = {} as any;
+  let apiActions = {} as any;
   let sagas = [];
 
   configs.forEach(config => {

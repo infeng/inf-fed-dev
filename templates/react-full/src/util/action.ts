@@ -1,8 +1,8 @@
-import { createAction } from 'redux-actions';
+import { createAction, ActionFunctionAny, Action } from 'redux-actions';
 
-export function initAction(keys: any, modelName: string) {
-  let actions = {};
-  let actionNames = {};
+export function initAction<T>(keys: any, modelName: string) {
+  let actions: {[p in keyof T]: ActionFunctionAny<Action<{}>>} = {} as any;
+  let actionNames: {[p in keyof T]: string} = {} as any;
 
   Object.keys(keys).forEach(key => {
     let actionName = `${modelName}/${keys[key]}`;

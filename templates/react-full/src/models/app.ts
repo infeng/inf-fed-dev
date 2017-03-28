@@ -6,18 +6,18 @@ let modelName = 'app';
 
 // simple actions
 
-export let keys = {
+let keys = {
   changeName: 'changeName',
 };
 
-const simpleActions = initAction(keys, modelName);
+const simpleActions = initAction<typeof keys>(keys, modelName);
 
 export const actionNames = simpleActions.actionNames;
 export const actions = simpleActions.actions;
 
 // apis
 
-export let apis = {
+let apis = {
   getName: 'getName',
 };
 
@@ -25,7 +25,7 @@ let apiConfigs: ApiConfig[] = [{
   path: apis.getName,
 }];
 
-const api = initApi('', apiConfigs, modelName);
+const api = initApi<typeof apis>('', apiConfigs, modelName);
 
 export const apiActionNames = api.apiActionNames;
 export const apiActions = api.apiActions;
@@ -39,27 +39,27 @@ export interface AppState {
 };
 
 export const reducer = handleActions<AppState, any>({
-  [apiActionNames[apis.getName].request](state, action) {
+  [apiActionNames.getName.request](state, action) {
     return {
       ...state,
       loading: true,
     };
   },
-  [apiActionNames[apis.getName].success](state, action) {
+  [apiActionNames.getName.success](state, action) {
     return {
       ...state,
       loading: false,
       name: action.payload.res.name,
     };
   },
-  [apiActionNames[apis.getName].error](state, action) {
+  [apiActionNames.getName.error](state, action) {
     return {
       ...state,
       loading: false,
       name: '',
     };
   },
-  [actionNames[keys.changeName]](state, action) {
+  [actionNames.changeName](state, action) {
     return {
       ...state,
       name: action.payload.name,

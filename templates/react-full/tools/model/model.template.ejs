@@ -5,7 +5,7 @@ let modelName = '<%= modelName %>';
 
 // simple actions
 
-export let keys = {
+let keys = {
   changeName: 'changeName',
 };
 
@@ -21,7 +21,7 @@ export interface <%= componentName %>State {
 };
 
 export const reducer = handleActions<<%= componentName %>State, any>({
-  [actionNames[keys.changeName]](state, action) {
+  [actionNames.changeName](state, action) {
     return {
       ...state,
       name: action.payload.name,
