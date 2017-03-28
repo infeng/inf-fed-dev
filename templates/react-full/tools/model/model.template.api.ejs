@@ -10,7 +10,7 @@ let keys = {
   changeName: 'changeName',
 };
 
-const simpleActions = initAction(keys, modelName);
+const simpleActions = initAction<type of keys>(keys, modelName);
 
 export const actionNames = simpleActions.actionNames;
 export const actions = simpleActions.actions;
@@ -25,7 +25,7 @@ let apiConfigs: ApiConfig[] = [{
   path: apis.getName,
 }];
 
-const api = initApi('', apiConfigs, modelName);
+const api = initApi<typeof apis>('', apiConfigs, modelName);
 
 export const apiActionNames = api.apiActionNames;
 export const apiActions = api.apiActions;
