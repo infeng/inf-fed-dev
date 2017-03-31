@@ -1,12 +1,10 @@
 import * as  React from 'react';
 import {
   Table,
-  Form,
   Row,
   Col,
 } from 'antd';
 import { ColumnProps as TableColumnConfig } from 'antd/lib/table/Column';
-import { WrappedFormUtils } from 'antd/lib/form/Form';
 export { ColumnProps as TableColumnConfig } from 'antd/lib/table/Column';
 import { connect } from 'react-redux';
 import { TokenState } from '../../../models/common/token';
@@ -66,8 +64,6 @@ export interface UniTableOwnProps {
   title?: any;
   /** 是否显示正在加载 */
   showLoading?: boolean;
-  /** ant-design form */
-  form?: WrappedFormUtils;
   /** 首次加载是否重置页码 */
   resetPaginationFirstTime?: boolean;
   /** 高级查询项 */
@@ -375,4 +371,4 @@ const mapState2Props = state => {
   };
 };
 
-export default connect<any, any, UniTableOwnProps>(mapState2Props)(Form.create()(UniTable));
+export default connect<any, any, UniTableOwnProps>(mapState2Props)(UniTable);

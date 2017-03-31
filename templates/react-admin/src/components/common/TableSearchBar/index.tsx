@@ -82,8 +82,7 @@ export interface AdvanceSearchDecorator {
   props: SelectDecorator | DateDecorator | CascaderDecorator | InputNumberDecorator | InputDecorator;
 }
 
-export interface TableSearchBarProps {
-  form?: WrappedFormUtils;
+export interface TableSearchBarOwnProps {
   toolbarButtons?: ToolbarButtonDecorator[];
   onActionClick?: (clickFunc: any) => void;
   noMappingType?: boolean;
@@ -96,6 +95,10 @@ export interface TableSearchBarProps {
   onFieldChange: (values) => void;
   className?: string;
   small?: boolean;
+}
+
+export interface TableSearchBarProps extends TableSearchBarOwnProps {
+  form: WrappedFormUtils;
 }
 
 const defaultDateFieldNames = ['startTime', 'endTime'];
@@ -792,7 +795,7 @@ class TableSearchBar extends React.Component<TableSearchBarProps, any> {
   }
 }
 
-export default Form.create()(TableSearchBar);
+export default Form.create<TableSearchBarOwnProps>()(TableSearchBar);
 
 function getCurrentWeek() {
   // 起止日期数组  
