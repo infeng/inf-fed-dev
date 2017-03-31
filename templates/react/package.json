@@ -16,8 +16,8 @@
   "homepage": "",
   "dependencies": {
     "@types/node": "^6.0.45",
-    "@types/react": "^0.14.39",
-    "@types/react-dom": "^0.14.17",    
+    "@types/react": "^15.0.20",
+    "@types/react-dom": "^0.14.23",
     "atool-build": "^0.8.1",
     "dora": "^0.4.3",
     "dora-plugin-browser-history": "^0.2.0",

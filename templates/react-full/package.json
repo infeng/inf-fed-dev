@@ -16,8 +16,8 @@
   "homepage": "",
   "dependencies": {
     "@types/node": "^6.0.45",
-    "@types/react": "^0.14.39",
-    "@types/react-dom": "^0.14.17",
+    "@types/react": "^15.0.20",
+    "@types/react-dom": "^0.14.23",
     "@types/react-router": "^2.0.44",
     "@types/redux-actions": "^1.2.2",
     "atool-build": "^0.8.1",
