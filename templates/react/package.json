@@ -6,7 +6,8 @@
   "scripts": {
     "start": "dora --port 8001 --plugins \"webpack,webpack-hmr,browser-history?index=/demo/index.html\"",
     "lint": "tslint -c tslint.json src/**/*.ts src/**/*.tsx",
-    "build": "atool-build"
+    "build": "atool-build",
+    "lib": "rm -rf tslib && tsc --outDir tslib"
   },
   "keywords": [
     "react",
