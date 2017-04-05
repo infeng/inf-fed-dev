@@ -195,6 +195,9 @@ class UniTable extends React.Component<UniTableProps, Partial<UniTableState>> {
   }
 
   handleReset = (queryData) => {
+    this.setState({
+      formValues: {},
+    });
     this.getList(queryData, this.props.tableState.sorter);
   }
 
