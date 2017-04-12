@@ -9,7 +9,7 @@ let keys = {
   changeName: 'changeName',
 };
 
-const simpleActions = initAction<type of keys>(keys, modelName);
+const simpleActions = initAction<typeof keys>(keys, modelName);
 
 export const actionNames = simpleActions.actionNames;
 export const actions = simpleActions.actions;
