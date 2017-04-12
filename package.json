@@ -1,6 +1,6 @@
 {
   "name": "inf-fed-dev",
-  "version": "2.0.2",
+  "version": "2.0.3",
   "description": "frontend dev boilerplate",
   "main": "index.js",
   "scripts": {
