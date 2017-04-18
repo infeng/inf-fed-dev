@@ -6,7 +6,7 @@
   "scripts": {
     "start": "dora --port 8001 --plugins \"proxy,webpack,webpack-hmr,browser-history?index=/src/entries/index.dev.html\"",
     "lint": "tslint -c tslint.json src/**/*.ts src/**/*.tsx",
-    "build": "atool-build",
+    "build": "export ENV=production && atool-build",
     "lib": "rm -rf tslib && tsc --outDir tslib"
   },
   "keywords": [
@@ -48,6 +48,7 @@
     "redux-actions": "^1.2.0",
     "redux-persist": "^4.5.0",
     "redux-saga": "^0.14.2",
+    "style-loader": "^0.16.1",
     "tslint": "^3.15.1",
     "typescript": "^2.1.4",
     "webpack": "^1.13.2"

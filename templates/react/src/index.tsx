@@ -1,10 +1,11 @@
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
+import './style.less';
 
 class App extends React.Component<any, any> {
   render() {
     return (
-      <p>Hello World</p>
+      <p className="title">Hello World</p>
     );
   }
 }

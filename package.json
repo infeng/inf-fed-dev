@@ -31,6 +31,7 @@
     "commander": "^2.9.0",
     "ejs": "^2.5.5",
     "ncp": "^2.0.0",
+    "style-loader": "^0.16.1",
     "typescript": "^2.1.4",
     "vinyl-fs": "^2.4.4"
   },
