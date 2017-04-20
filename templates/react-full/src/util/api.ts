@@ -88,7 +88,7 @@ function makeRequest(basePath: string, api: ApiConfig) {
   return async(data) => {
     let opts = {};
     let uri = basePath + '/' + api.path;
-    let method = 'GET';
+    let method = 'POST';
     if (api.method) {
       method = api.method;
     }
@@ -103,7 +103,7 @@ function makeRequest(basePath: string, api: ApiConfig) {
       };
     }else {
       opts = {
-        method: 'POST',
+        method: method,
         body: querystring.stringify(data) || null,
       };
     }

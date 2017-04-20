@@ -88,7 +88,7 @@ function makeRequest(basePath: string, api: ApiConfig) {
   return async(data) => {
     let opts = {};
     let uri = basePath + api.path;
-    let method = 'GET';
+    let method = 'POST';
     if (api.method) {
       method = api.method;
     }
@@ -103,7 +103,7 @@ function makeRequest(basePath: string, api: ApiConfig) {
       };
     }else {
       opts = {
-        method: 'POST',
+        method: method,
         body: querystring.stringify(data) || null,
       };
     }
@@ -156,12 +156,14 @@ function showMessage(actionNames: ApiActionNames, apiSaga: any, successText: str
   return function* () {
     while (true) {
       const req = yield take(actionNames.request);
-      yield call(apiSaga, req);
-      let showMessage = '操作成功';
-      if (typeof successText === 'string') {
-        showMessage = successText;
+      const res = yield call(apiSaga, req);
+      if (res) {
+        let showMessage = '操作成功';
+        if (typeof successText === 'string') {
+          showMessage = successText;
+        }
+        message.success(showMessage);
       }
-      message.success(showMessage);
     }
   };
 }
@@ -170,11 +172,13 @@ function redirect(actionNames: ApiActionNames, apiSaga: any, redirectObj: Redire
   return function* () {
     while (true) {
       const req = yield take(actionNames.request);
-      yield call(apiSaga, req);
-      message.success(redirectObj.message || '操作成功');
-      yield put(createAction('sidebar/updatePane')({
-        componentName: redirectObj.componentName,
-      }));
+      const res = yield call(apiSaga, req);
+      if (res) {
+        message.success(redirectObj.message || '操作成功');
+        yield put(createAction('sidebar/updatePane')({
+          componentName: redirectObj.componentName,
+        }));
+      }
     }
   };
 }
