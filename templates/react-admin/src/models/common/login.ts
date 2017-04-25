@@ -77,28 +77,17 @@ export const sagas = [
 
 // reducers
 
-interface Menu {
-  index: number;
-  text: string;
-  name: string;
-  leaf: boolean;
-  icon: string;
-  items?: Menu[];
-}
-
 export interface LoginState {
   logoutLoading: boolean;
   loading: boolean;
   name: string;
   username: string;
-  menus: Menu[];
   getOperatorInfoError: boolean;
 };
 
 const initialState = {
   name: '',
   username: '',
-  menus: [],
 };
 
 export const reducer = handleActions<LoginState, any>({
@@ -143,6 +132,12 @@ export const reducer = handleActions<LoginState, any>({
       logoutLoading: false,
     };
   },
+  ['loginTimeout'](state, action) {
+    return {
+      ...state,
+      ...initialState,
+    };
+  },   
   [apiActionNames.getOperatorInfo.request](state, action) {
     return {
       ...state,

@@ -201,6 +201,15 @@ export const reducer = handleActions<SidebarState, any>({
       paneConfigs: [],
     };
   },
+  ['loginTimeout'](state, action) {
+    return {
+      ...state,
+      menus: [],
+      activeSubMenu: '',
+      activePath: '',
+      paneConfigs: [],
+    };
+  },  
   [apiActionNames.logout.success](state, action) {
     return {
       ...state,

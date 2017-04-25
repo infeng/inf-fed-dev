@@ -69,6 +69,12 @@ export const reducer = handleActions<TokenState, any>({
       operatorId: null,
     };
   },
+  ['loginTimeout'](state, action) {
+    return {
+      ...state,
+      token: null,
+    };
+  },
 }, {
   token: null,
   operatorId: null,
