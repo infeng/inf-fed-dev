@@ -104,7 +104,7 @@ function makeRequest(basePath: string, api: ApiConfig) {
     }else {
       opts = {
         method: method,
-        body: querystring.stringify(data) || null,
+        body: JSON.stringify(data) || null,
       };
     }
     return await xFetch(uri, opts);
@@ -134,6 +134,9 @@ function makeEffect(api: ApiConfig, request: any, actionNames: ApiActionNames) {
       console.error(`request /${api.path} 错误`);
       console.error(`request params`, req.payload);
       console.error(`message`, error);
+      if (error.status === -101) {
+        yield put(createAction('loginTimeout')({}));
+      }
       yield put(createAction(actionNames.error)({
         req: req.payload,
         error: error,

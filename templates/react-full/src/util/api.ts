@@ -104,7 +104,7 @@ function makeRequest(basePath: string, api: ApiConfig) {
     }else {
       opts = {
         method: method,
-        body: querystring.stringify(data) || null,
+        body: JSON.stringify(data) || null,
       };
     }
     return await xFetch(uri, opts);
@@ -156,12 +156,14 @@ function showMessage(actionNames: ApiActionNames, apiSaga: any, message: string 
   return function* () {
     while (true) {
       const req = yield take(actionNames.request);
-      yield call(apiSaga, req);
-      let showMessage = 'request success';
-      if (typeof message === 'string') {
-        showMessage = message;
+      const res = yield call(apiSaga, req);
+      if (res) {
+        let showMessage = 'request success';
+        if (typeof message === 'string') {
+          showMessage = message;
+        }
+        console.log(showMessage);
       }
-      console.log(showMessage);
     }
   };
 }
@@ -170,11 +172,13 @@ function redirect(actionNames: ApiActionNames, apiSaga: any, redirectObj: Redire
   return function* () {
     while (true) {
       const req = yield take(actionNames.request);
-      yield call(apiSaga, req);
-      console.log(redirectObj.message || 'request success');
-      browserHistory.push({
-        pathname: redirectObj.componentName,
-      });
+      const res = yield call(apiSaga, req);
+      if (res) {
+        console.log(redirectObj.message || 'request success');
+        browserHistory.push({
+          pathname: redirectObj.componentName,
+        });
+      }
     }
   };
 }
