@@ -122,7 +122,7 @@ class UniTable extends React.Component<UniTableProps, Partial<UniTableState>> {
     this.state = {
       selectedRows: [],
       selectedRowKeys: [],
-      formValues: {},
+      formValues: props.tableState.queryData,
     };
   }
 
