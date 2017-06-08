@@ -116,13 +116,15 @@ class UniTable extends React.Component<UniTableProps, Partial<UniTableState>> {
   private scrollX: number;
   private rowSelection: any;
 
-  constructor(props) {
+  constructor(props: UniTableProps) {
     super(props);
+
+    let advanceSearchSelectFields = getAdvanceSearchDefaultValues(this.props.advanceSearchs);
 
     this.state = {
       selectedRows: [],
       selectedRowKeys: [],
-      formValues: props.tableState.queryData,
+      formValues: {...advanceSearchSelectFields, ...props.tableState.queryData},
     };
   }
 
@@ -196,7 +198,7 @@ class UniTable extends React.Component<UniTableProps, Partial<UniTableState>> {
 
   handleReset = (queryData) => {
     this.setState({
-      formValues: {},
+      formValues: queryData,
     });
     this.getList(queryData, this.props.tableState.sorter);
   }
