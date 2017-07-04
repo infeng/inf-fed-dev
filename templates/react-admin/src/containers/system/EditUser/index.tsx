@@ -4,9 +4,9 @@ const FormItem = Form.Item;
 import CardEx from '../../common/CardEx';
 import { WrappedFormUtils } from 'antd/lib/form/Form';
 import { EditUserState, apiActions, actions } from '../../../models/system/editUser';
-import { connect } from 'react-redux';
 import { FORMITEMLAYOUT, FORMITEMLAYOUT_WIDTHOUTLABEL } from '../../../util/constants';
 import { Field } from '../../../util/baseDecorator';
+import { injectApi, ApiComponentProps } from '../../../util/inject';
 
 export interface EditUserOwnProps {
   options: {
@@ -16,11 +16,8 @@ export interface EditUserOwnProps {
   };
 }
 
-export interface EditUserProps extends EditUserOwnProps {
+export interface EditUserProps extends EditUserOwnProps, ApiComponentProps<EditUserState> {
   form: WrappedFormUtils;
-  token: any;
-  data: EditUserState;
-  dispatch: any;
 }
 
 const formFields = {
@@ -131,14 +128,6 @@ class EditUser extends React.Component<EditUserProps, any> {
   }
 }
 
-const mapState2Props = state => {
-  const { token, editUser } = state;
-  return {
-    token,
-    data: editUser,
-  };
-};
-
 const mapPropsToFields = (props: EditUserProps) => {
   let data = props.data;
   return {
@@ -152,6 +141,9 @@ const onValuesChange = (props: EditUserProps, values) => {
   dispatch(actions.setValues(values));
 };
 
-export default connect<any, any, EditUserOwnProps>(mapState2Props)(
-  Form.create({mapPropsToFields, onValuesChange})(EditUser)
+export default injectApi<EditUserOwnProps>(
+  Form.create({mapPropsToFields, onValuesChange})(EditUser),
+  {
+    data: 'editUser',
+  }
 );

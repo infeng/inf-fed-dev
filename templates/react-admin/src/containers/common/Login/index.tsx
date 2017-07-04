@@ -1,18 +1,16 @@
 import * as React from 'react';
 import { Form, Input, Button, Card, Icon } from 'antd';
-import { connect } from 'react-redux';
 import { apiActions, LoginState } from '../../../models/common/login';
 import './style.less';
 const FormItem = Form.Item;
 import { BASE_PREFIX } from '../../../util/constants';
 import { WrappedFormUtils } from 'antd/lib/form/Form';
+import { injectApi, ApiComponentProps } from '../../../util/inject';
 
 const prefixCls = `${BASE_PREFIX}-login`;
 
-export interface LoginProps {
-  dispatch: any;
+export interface LoginProps extends ApiComponentProps<LoginState> {
   form: WrappedFormUtils;
-  data: LoginState;
 }
 
 class Login extends React.Component<LoginProps, any> {
@@ -83,11 +81,6 @@ class Login extends React.Component<LoginProps, any> {
   }
 }
 
-const mapState2Props = state => {
-  const { login } = state;
-  return {
-    data: login,
-  };
-};
-
-export default connect(mapState2Props)(Form.create()(Login));
+export default injectApi(Form.create()(Login), {
+  data: 'login',
+});

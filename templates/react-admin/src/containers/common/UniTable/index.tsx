@@ -6,7 +6,6 @@ import {
 } from 'antd';
 import { ColumnProps as TableColumnConfig } from 'antd/lib/table/Column';
 export { ColumnProps as TableColumnConfig } from 'antd/lib/table/Column';
-import { connect } from 'react-redux';
 import { TokenState } from '../../../models/common/token';
 export { SearchTypeDecorator, ToolbarButtonDecorator, AdvanceSearchDecorator
 , CascaderDecorator, DateDecorator, SelectDecorator, InputNumberDecorator, InputDecorator
@@ -16,6 +15,8 @@ import TableSearchBar, { SearchTypeDecorator, ToolbarButtonDecorator
 import { Sorter, ListState } from '../../../util/listReducers';
 import './style.less';
 import { MIN_HEIGHT } from '../../../util/constants';
+import { AppState } from '../../../models/common/app';
+import { injectNormal, NormalComponentProps } from '../../../util/inject';
 
 const noLoop = () => {};
 
@@ -82,9 +83,8 @@ export interface UniTableOwnProps {
   rowKey?: any;
 }
 
-export interface UniTableProps extends UniTableOwnProps {
-  height: number;
-  dispatch: any;
+export interface UniTableProps extends UniTableOwnProps, NormalComponentProps {
+  app: AppState;
   token: TokenState;
 }
 
@@ -270,7 +270,7 @@ class UniTable extends React.Component<UniTableProps, Partial<UniTableState>> {
     const listData = this.props.tableState;
     let data = listData.infos;
     let defaultScrollYOffset = 350;
-    let height = Math.max(MIN_HEIGHT, this.props.height);
+    let height = Math.max(MIN_HEIGHT, this.props.app.height);
     const { hasToolbar, toolbarButtons, searchTypes } = this.props;
     if (hasToolbar && toolbarButtons.length === 0) {
       defaultScrollYOffset -= 30;
@@ -369,11 +369,7 @@ class UniTable extends React.Component<UniTableProps, Partial<UniTableState>> {
   }
 }
 
-const mapState2Props = state => {
-  return {
-    height: state.app.height,
-    token: state.token,
-  };
-};
-
-export default connect<any, any, UniTableOwnProps>(mapState2Props)(UniTable);
+export default injectNormal<UniTableOwnProps>(UniTable, {
+  app: 'app',
+  token: 'token',
+});

@@ -1,17 +1,16 @@
 import * as React from 'react';
 import { Menu, Icon } from 'antd';
-import { connect } from 'react-redux';
 import { AppState } from '../../../models/common/app';
 import { SIDEBAR_WIDTH, BASE_PREFIX } from '../../../util/constants';
 import { SidebarState, actions } from '../../../models/common/sidebar';
 import classnames from 'classnames';
 import './style.less';
 import { browserHistory } from 'react-router';
+import { injectNormal, NormalComponentProps } from '../../../util/inject';
 
 const SubMenu = Menu.SubMenu;
 
-export interface SiderProps {
-  dispatch: any;
+export interface SiderProps extends NormalComponentProps {
   app: AppState;
   sidebar: SidebarState;
 }
@@ -86,13 +85,7 @@ class Sider extends React.Component<SiderProps, any> {
   }
 }
 
-const mapState2Props = state => {
-  const { app, sidebar, theme } = state;
-  return {
-    app,
-    sidebar,
-    theme,
-  };
-};
-
-export default connect(mapState2Props)(Sider);
+export default injectNormal(Sider, {
+  app: 'app',
+  sidebar: 'sidebar',
+});

@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { Button } from 'antd';
 import { actions } from '../../../models/common/sidebar';
-import { connect } from 'react-redux';
+import { injectNormal, NormalComponentProps } from '../../../util/inject';
 
 interface BackOwnProps {
   /** 需要返回的componentName */
@@ -16,8 +16,7 @@ interface BackOwnProps {
   targetDomId?: any;
 }
 
-interface BackProps extends BackOwnProps {
-  dispatch: any;
+interface BackProps extends BackOwnProps, NormalComponentProps {
 }
 
 /**
@@ -59,8 +58,4 @@ class Back extends React.Component<BackProps, any> {
   }
 }
 
-const mapState2Props = state => {
-  return {};
-};
-
-export default connect<any, any, BackOwnProps>(mapState2Props)(Back);
+export default injectNormal(Back, {});

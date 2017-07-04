@@ -1,15 +1,11 @@
 import * as React from 'react';
-import { connect } from 'react-redux';
-import { TokenState } from '../../../models/common/token';
 import UniTable, { TableColumnConfig, ToolbarButtonDecorator
 , SearchTypeDecorator, AdvanceSearchDecorator } from '../../common/UniTable';
 import { UserListState, apiActions } from '../../../models/system/userList';
 import { updatePane } from '../../../models/common/sidebar';
+import { injectApi, ApiComponentProps } from '../../../util/inject';
 
-export interface UserListProps {
-  token: TokenState;
-  data: UserListState;
-  dispatch: any;
+export interface UserListProps extends ApiComponentProps<UserListState> {
 }
 
 const searchTypes: SearchTypeDecorator = {
@@ -112,11 +108,6 @@ class UserList extends React.Component<UserListProps, any> {
   }
 }
 
-const mapState2Props = state => {
-  const { token, userList } = state;
-  return {
-    token,
-    data: userList,
-  };
-};
-export default connect(mapState2Props)(UserList);
+export default injectApi(UserList, {
+  data: 'userList',
+});

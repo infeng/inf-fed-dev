@@ -7,12 +7,10 @@ import { EditPasswordState, apiActions } from '../../../models/system/editPasswo
 import { connect } from 'react-redux';
 import { FORMITEMLAYOUT, FORMITEMLAYOUT_WIDTHOUTLABEL } from '../../../util/constants';
 import { Field } from '../../../util/baseDecorator';
+import { injectApi, ApiComponentProps } from '../../../util/inject';
 
-export interface EditPasswordProps {
+export interface EditPasswordProps extends ApiComponentProps<EditPasswordState> {
   form: WrappedFormUtils;
-  token: any;
-  data: EditPasswordState;
-  dispatch: any;
 }
 
 const formFields = {
@@ -120,12 +118,6 @@ class EditPassword extends React.Component<EditPasswordProps, any> {
   }
 }
 
-const mapState2Props = state => {
-  const { token, editPassword } = state;
-  return {
-    token,
-    data: editPassword,
-  };
-};
-
-export default connect(mapState2Props)(Form.create()(EditPassword));
+export default injectApi(Form.create()(EditPassword), {
+  data: 'editPassword',
+});

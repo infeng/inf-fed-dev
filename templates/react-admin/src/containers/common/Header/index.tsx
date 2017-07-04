@@ -1,13 +1,12 @@
 import * as React from 'react';
 import { Menu, Icon } from 'antd';
-import { connect } from 'react-redux';
 import { BASE_PREFIX } from '../../../util/constants';
 import './style.less';
 import classnames from 'classnames';
 import { apiActions as loginApiActions, LoginState } from '../../../models/common/login';
+import { injectNormal, NormalComponentProps } from '../../../util/inject';
 
-export interface HeaderProps {
-  dispatch: any;
+export interface HeaderProps extends NormalComponentProps {
   login: LoginState;
   token: any;
 }
@@ -54,13 +53,8 @@ class Header extends React.Component<HeaderProps, any> {
   }
 }
 
-const mapState2Props = state => {
-  const { login, theme, token } = state;
-  return {
-    login,
-    theme,
-    token,
-  };
-};
-
-export default connect(mapState2Props)(Header);
+export default injectNormal(Header, {
+  login: 'login',
+  theme: 'theme',
+  token: 'token',
+});

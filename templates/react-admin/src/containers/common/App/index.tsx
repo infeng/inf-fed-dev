@@ -1,5 +1,4 @@
 import * as React from 'react';
-import { connect } from 'react-redux';
 import '../../../style/index.less';
 import Header from '../Header';
 import Sidebar from '../Sidebar';
@@ -11,9 +10,9 @@ import { apiActions as lApiActions, LoginState } from '../../../models/common/lo
 import CardEx from '../../common/CardEx';
 import Loading from '../../../components/common/Loading';
 import Error from '../../../components/common/Error';
+import { injectNormal, NormalComponentProps } from '../../../util/inject';
 
-export interface AppProps {
-  dispatch: any;
+export interface AppProps extends NormalComponentProps {
   login: LoginState;
   token: any;
   app: AppState;
@@ -84,13 +83,8 @@ class App extends React.Component<AppProps, any> {
   }
 }
 
-const mapState2Props = state => {
-  const { login, token, app } = state;
-  return {
-    login,
-    token,
-    app,
-  };
-};
-
-export default connect(mapState2Props)(App);
+export default injectNormal(App, {
+  login: 'login',
+  token: 'token',
+  app: 'app',
+});

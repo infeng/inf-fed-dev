@@ -1,5 +1,4 @@
 import * as React from 'react';
-import { connect } from 'react-redux';
 import { AppState } from '../../../models/common/app';
 import { SidebarState, actions, updatePane, BackComponentDecorator } from '../../../models/common/sidebar';
 import { ComponentsState } from '../../../models/common/components';
@@ -9,9 +8,9 @@ import './style.less';
 import { Tabs, Button } from 'antd';
 const TabPane = Tabs.TabPane;
 import Home from '../../../components/common/Home';
+import { injectNormal, NormalComponentProps } from '../../../util/inject';
 
-export interface MainProps {
-  dispatch: any;
+export interface MainProps extends NormalComponentProps {
   app: AppState;
   routing: any;
   sidebar: SidebarState;
@@ -244,18 +243,12 @@ class Main extends React.Component<MainProps, any> {
   }
 }
 
-const mapState2Props = state => {
-  const { app, sidebar, routing, components } = state;
-
-  return {
-    app,
-    sidebar,
-    routing,
-    components,
-  };
-};
-
-export default connect(mapState2Props)(Main);
+export default injectNormal(Main, {
+  app: 'app',
+  sidebar: 'sidebar',
+  routing: 'routing',
+  components: 'components',
+});
 
 function getComponent(cps, componentName, options): string | React.ReactNode {
   let Component = cps[componentName];

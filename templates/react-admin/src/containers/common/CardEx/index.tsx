@@ -1,8 +1,8 @@
 import * as React from 'react';
-import { connect } from 'react-redux';
 import { AppState } from '../../../models/common/app';
 import './style.less';
 import Loading from '../../../components/common/Loading';
+import { injectNormal, NormalComponentProps } from '../../../util/inject';
 
 interface CardExOwnProps {
   /** 默认高度需减去的值 */
@@ -15,7 +15,7 @@ interface CardExOwnProps {
   loading?: boolean;
 }
 
-interface CardExProps extends CardExOwnProps {
+interface CardExProps extends CardExOwnProps, NormalComponentProps {
   app: AppState;
 }
 
@@ -55,11 +55,6 @@ class CardEx extends React.Component<CardExProps, any> {
   }
 }
 
-const mapState2Props = state => {
-  const { app } = state;
-  return {
-    app,
-  };
-};
-
-export default connect<any, any, CardExOwnProps>(mapState2Props)(CardEx);
+export default injectNormal(CardEx, {
+  app: 'app',
+});
