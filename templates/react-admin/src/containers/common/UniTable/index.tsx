@@ -1,10 +1,7 @@
 import * as  React from 'react';
-import {
-  Table,
-  Row,
-  Col,
-} from 'antd';
+import { Table, Row, Col } from 'antd';
 import { ColumnProps as TableColumnConfig } from 'antd/lib/table/Column';
+import { WrappedFormUtils } from 'antd/lib/form/Form';
 export { ColumnProps as TableColumnConfig } from 'antd/lib/table/Column';
 import { TokenState } from '../../../models/common/token';
 export { SearchTypeDecorator, ToolbarButtonDecorator, AdvanceSearchDecorator
@@ -15,8 +12,8 @@ import TableSearchBar, { SearchTypeDecorator, ToolbarButtonDecorator
 import { Sorter, ListState } from '../../../util/listReducers';
 import './style.less';
 import { MIN_HEIGHT } from '../../../util/constants';
-import { AppState } from '../../../models/common/app';
 import { injectNormal, NormalComponentProps } from '../../../util/inject';
+import { AppState } from '../../../models/common/app';
 
 const noLoop = () => {};
 
@@ -65,6 +62,8 @@ export interface UniTableOwnProps {
   title?: any;
   /** 是否显示正在加载 */
   showLoading?: boolean;
+  /** ant-design form */
+  form?: WrappedFormUtils;
   /** 首次加载是否重置页码 */
   resetPaginationFirstTime?: boolean;
   /** 高级查询项 */
@@ -81,6 +80,8 @@ export interface UniTableOwnProps {
   expandedRowKeys?: any;
   expandedRowRender?: any;
   rowKey?: any;
+  transformQueryDataIn?: (queryData: any) => any;
+  transformQueryDataOut?: (queryData: any, sorterParams: any) => any;
 }
 
 export interface UniTableProps extends UniTableOwnProps, NormalComponentProps {
@@ -110,6 +111,13 @@ class UniTable extends React.Component<UniTableProps, Partial<UniTableState>> {
     tableClassName: '',
     smallToolbar: false,
     showLoading: true,
+    transformQueryDataIn: (queryData) => queryData,
+    transformQueryDataOut: (queryData, sorterParams) => {
+      return {
+        ...queryData,
+        ...sorterParams,
+      };
+    },
   };
 
   private columns: TableColumnConfig<any>[];
@@ -124,7 +132,7 @@ class UniTable extends React.Component<UniTableProps, Partial<UniTableState>> {
     this.state = {
       selectedRows: [],
       selectedRowKeys: [],
-      formValues: {...advanceSearchSelectFields, ...props.tableState.queryData},
+      formValues: {...advanceSearchSelectFields, ...this.props.transformQueryDataIn(props.tableState.queryData)},
     };
   }
 
@@ -140,9 +148,12 @@ class UniTable extends React.Component<UniTableProps, Partial<UniTableState>> {
           pageSize = this.props.tableState.pagination.pageSize || 10;
         }
       }
-      let advanceSearchSelectFields = getAdvanceSearchDefaultValues(this.props.advanceSearchs);
-      this.getList({ pageNo: pageNo, pageSize: pageSize,
-      ...advanceSearchSelectFields, ...this.props.tableState.queryData}, this.props.tableState.sorter);
+      let queryData = this.state.formValues;
+      this.getList({
+        pageNo,
+        pageSize,
+        ...queryData,
+      }, this.props.tableState.sorter);
     }
   }
 
@@ -160,7 +171,9 @@ class UniTable extends React.Component<UniTableProps, Partial<UniTableState>> {
     let except = {
       sorter: sorter,
     };
-    dispatch(apiAction({...token, ...queryData, ...otherParams, ...sorterParams, except}));
+    const { pageNo, pageSize, ...rest } = queryData;
+    let advanceSearchParams = this.props.transformQueryDataOut(rest, sorterParams);
+    dispatch(apiAction({pageNo, pageSize, ...token, ...advanceSearchParams, ...otherParams, except}));
   }
 
   onSelectChange(selectedKeys, selectedRows) {
@@ -190,17 +203,35 @@ class UniTable extends React.Component<UniTableProps, Partial<UniTableState>> {
       }
     });
     this.getList({...advanceSearchSelectFields, ...params}, sorterState);
+    this.setState({
+      selectedRows: [],
+      selectedRowKeys: [],
+    });
+    this.props.rowSelection([], []);
   }
 
   handleSearch = (queryData) => {
-    this.getList(queryData, this.props.tableState.sorter);
+    this.getList(
+      {
+        pageNo: 1,
+        pageSize: this.props.tableState.pagination.pageSize,
+        ...queryData,
+      },
+      this.props.tableState.sorter);
   }
 
   handleReset = (queryData) => {
     this.setState({
       formValues: queryData,
     });
-    this.getList(queryData, this.props.tableState.sorter);
+    this.getList(
+      {
+        pageNo: 1,
+        pageSize: 10,
+        ...queryData,
+      },
+      this.props.tableState.sorter
+    );
   }
 
   handleActionClick = (clickFunc) => {
@@ -209,6 +240,7 @@ class UniTable extends React.Component<UniTableProps, Partial<UniTableState>> {
       selectedRows: [],
       selectedRowKeys: [],
     });
+    this.props.rowSelection([], []);
   }
 
   handleFieldChange = (values) => {
@@ -219,11 +251,12 @@ class UniTable extends React.Component<UniTableProps, Partial<UniTableState>> {
 
   _renderToolbar() {
     if (this.props.hasToolbar) {
+      let queryData = this.props.transformQueryDataIn(this.props.tableState.queryData);
+
       return (
         <TableSearchBar
         onReset={this.handleReset}
         onSearch={this.handleSearch}
-        tableState={this.props.tableState}
         toolbarButtons={this.props.toolbarButtons}
         noMappingType={this.props.noMappingType}
         searchTypes={this.props.searchTypes}
@@ -233,6 +266,7 @@ class UniTable extends React.Component<UniTableProps, Partial<UniTableState>> {
         onFieldChange={this.handleFieldChange}
         className={this.props.toolbarClassName}
         small={this.props.smallToolbar}
+        queryData={queryData}
         />
       );
     }
@@ -269,22 +303,25 @@ class UniTable extends React.Component<UniTableProps, Partial<UniTableState>> {
   render() {
     const listData = this.props.tableState;
     let data = listData.infos;
-    let defaultScrollYOffset = 350;
+    let defaultScrollYOffset = 315;
     let height = Math.max(MIN_HEIGHT, this.props.app.height);
     const { hasToolbar, toolbarButtons, searchTypes } = this.props;
     if (hasToolbar && toolbarButtons.length === 0) {
       defaultScrollYOffset -= 30;
     }
+    if (hasToolbar && searchTypes) {
+      defaultScrollYOffset += 20;
+    }
     if (hasToolbar && !searchTypes && toolbarButtons.length > 0) {
-      defaultScrollYOffset -= 110;
+      defaultScrollYOffset -= 40;
     }
     if (!hasToolbar && toolbarButtons.length === 0) {
       defaultScrollYOffset -= 150;
     }
-    if (!data || data.length === 0) {
-      defaultScrollYOffset += 40;
-    }
     let bodyHeight = this.props.scrollY || height - (this.props.scrollY_offset || defaultScrollYOffset);
+    if ((listData.infos || []).length > 0) {
+      bodyHeight += 35;
+    }
     let scroll: {y: number, x?: number} = {
       y: bodyHeight,
     };
@@ -370,6 +407,6 @@ class UniTable extends React.Component<UniTableProps, Partial<UniTableState>> {
 }
 
 export default injectNormal<UniTableOwnProps>(UniTable, {
-  app: 'app',
   token: 'token',
+  app: 'app',
 });

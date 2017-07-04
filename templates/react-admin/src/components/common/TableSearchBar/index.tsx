@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Form, Button, Row, Col, Select, Input, Cascader, DatePicker, InputNumber, Radio } from 'antd';
+import { Form, Button, Select, Input, Cascader, DatePicker, InputNumber, Radio } from 'antd';
 import { WrappedFormUtils } from 'antd/lib/form/Form';
 import { ButtonType } from 'antd/lib/button/button';
 import { DATETIME_FORMAT } from '../../../util/constants';
@@ -33,6 +33,8 @@ export interface ToolbarButtonDecorator {
 
 interface BaseSearchDecorator {
   fieldName: string;
+  paddingRight?: number;
+  paddingLeft?: number;
 }
 
 export interface CascaderDecorator extends BaseSearchDecorator {
@@ -41,45 +43,58 @@ export interface CascaderDecorator extends BaseSearchDecorator {
   defaultValue?: any;
   allowClear?: boolean;
   filter?: (item: any) => boolean;
+  width?: number;
 }
 
-export interface DateDecorator {
+export interface DateDecorator extends BaseSearchDecorator {
   label?: string;
   fieldNames?: string[];
   defaultValue?: moment.Moment[];
   isAdvanceTimeRange?: boolean;
   advanceType?: SearchTypeDecorator;
+  format?: string;
+  showTime?: boolean;
 }
 
 export interface SelectDecorator extends BaseSearchDecorator {
   defaultValue?: any;
-  options: {value: number | string, text?: string, name?: string}[];
+  options: {value: number | string, text?: string, name?: string, groupId?: string, nameAbbreviation?: string}[];
   placeholder?: string;
   allowClear?: boolean;
   searchImmediately?: boolean;
   width?: number;
+  showSearch?: boolean;
+  optionKey?: (item, index) => string;
+  filterOption?: any;
+  mode?: 'multiple' | 'tags' | 'combobox' | 'default';
+  resetFieldNameOnChange?: string;
+  filter?: (values, options) => any[];
 }
 
 export interface InputNumberDecorator extends BaseSearchDecorator {
   defaultValue?: number;
   placeholder: string;
   width?: number;
-  labelCol?: any;
-  wrapperCol?: any;
 }
 
 export interface InputDecorator extends BaseSearchDecorator {
   defaultValue?: number;
   placeholder: string;
-  labelCol?: any;
-  wrapperCol?: any;
+  width?: number;
 }
 
-export type AdvanceSearchType = 'select' | 'date' | 'cascader' | 'inputNumber' | 'input';
+export interface SimpleDateDecorator extends BaseSearchDecorator {
+  defaultValue?: string;
+  format?: string;
+  showTime?: boolean;
+}
+
+export type AdvanceSearchType = 'select' | 'date' | 'cascader' | 'inputNumber' | 'input' | 'simpleDate';
 
 export interface AdvanceSearchDecorator {
   type: AdvanceSearchType;
-  props: SelectDecorator | DateDecorator | CascaderDecorator | InputNumberDecorator | InputDecorator;
+  props: SelectDecorator | DateDecorator | CascaderDecorator | InputNumberDecorator | InputDecorator |
+  SimpleDateDecorator;
 }
 
 export interface TableSearchBarOwnProps {
@@ -90,11 +105,11 @@ export interface TableSearchBarOwnProps {
   advanceSearchs?: AdvanceSearchDecorator[];
   onReset: (queryDate) => void;
   onSearch: (queryParams) => void;
-  tableState: any;
   selectedRowsLength?: number;
   onFieldChange: (values) => void;
   className?: string;
   small?: boolean;
+  queryData: any;
 }
 
 export interface TableSearchBarProps extends TableSearchBarOwnProps {
@@ -103,6 +118,10 @@ export interface TableSearchBarProps extends TableSearchBarOwnProps {
 
 const defaultDateFieldNames = ['startTime', 'endTime'];
 const defaultDateValues = [null, null];
+const itemStyle: React.CSSProperties = {
+  display: 'inline-block',
+  verticalAlign: 'middle',
+};
 
 class TableSearchBar extends React.Component<TableSearchBarProps, any> {
   static defaultProps = {
@@ -157,6 +176,17 @@ class TableSearchBar extends React.Component<TableSearchBarProps, any> {
     return null;
   }
 
+  renderItem = (children: React.ReactNode, options: BaseSearchDecorator, style?: React.CSSProperties) => {
+    return (
+      <div
+        style={{...itemStyle, padding: getItemPadding(options), ...style}}
+        key={options.fieldName}
+      >
+        {children}
+      </div>
+    );
+  }
+
   renderNormalSearch = () => {
     const { searchTypes } = this.props;
     if (searchTypes) {
@@ -164,29 +194,21 @@ class TableSearchBar extends React.Component<TableSearchBarProps, any> {
 
       let [typeFiledName, mappingTypeFieldName] = this.getSearchTypeFieldName();
 
-      let mappingTypeInitialValue = 1;
-      if (this.props.tableState.queryData && this.props.tableState.queryData[mappingTypeFieldName]) {
-        mappingTypeInitialValue = this.props.tableState.queryData[mappingTypeFieldName];
-      }
-      let searchTypeInitialValue = searchTypes.defaultValue || 1;
-      if (this.props.tableState.queryData && this.props.tableState.queryData[typeFiledName]) {
-        searchTypeInitialValue = this.props.tableState.queryData[typeFiledName];
-      }
-      let searchValueInitialValue = undefined;
-      if (this.props.tableState.queryData && this.props.tableState.queryData['searchValue']) {
-        searchValueInitialValue = this.props.tableState.queryData['searchValue'];
-      }
+      let mappingTypeInitialValue = getInitialValue(this.props.queryData, mappingTypeFieldName, 1);
+      let searchTypeInitialValue = getInitialValue(
+        this.props.queryData, typeFiledName, searchTypes.defaultValue || 1);
+      let searchValueInitialValue = getInitialValue(this.props.queryData, 'searchValue', undefined);
 
       const mappingTypeNode = this.props.noMappingType ?
       '' :
-      <Col xs={6} sm={6} md={6} lg={6} >
-        <FormItem>
+      (
+        <FormItem style={{ ...itemStyle, width: '80px'}}>
           {getFieldDecorator (mappingTypeFieldName, {
             initialValue: mappingTypeInitialValue.toString(),
           })(
             <Select
               placeholder="匹配模式"
-              allowClear={true}
+              allowClear={false}
               style={{width: '100%'}}
               onSelect={(value) => {this.handleFieldChange(mappingTypeFieldName, value);}}
             >
@@ -196,7 +218,7 @@ class TableSearchBar extends React.Component<TableSearchBarProps, any> {
             </Select>
           )}
         </FormItem>
-      </Col>;
+      );
 
       const searchTypeOptions = searchTypes.items.map(
         type => <Option key={type.value.toString()} value={type.value.toString()}>{type.text}</Option>);
@@ -217,55 +239,26 @@ class TableSearchBar extends React.Component<TableSearchBarProps, any> {
       if (this.props.noMappingType) {
         width = '292px';
       }
-      let searchTypeSize = {
-        xs: 7,
-        sm: 7,
-        md: 7,
-        lg: 7,
-      };
-      let searchValueSize = {
-        xs: 11,
-        sm: 11,
-        md: 11,
-        lg: 11,
-      };
-      if (this.props.noMappingType) {
-        searchTypeSize = {
-          xs: 10,
-          sm: 10,
-          md: 10,
-          lg: 10,
-        };
-        searchValueSize = {
-          xs: 14,
-          sm: 14,
-          md: 14,
-          lg: 14,
-        };
-      }
-      return (
-        <Col xs={24} sm={18} md={16} lg={8} style={{padding: '0 8px', width: width}}>
-          <Col {...searchTypeSize} >
-              <FormItem>
-                {searchTypeProps(
-                  <Select
-                    placeholder="查询类型"
-                    allowClear={true}
-                    style={{width: '100%'}}
-                    onSelect={(value) => {this.handleFieldChange(typeFiledName, value);}}
-                    >
-                  { searchTypeOptions }
-                  </Select>
-                )}
-              </FormItem>
-          </Col>
+      return this.renderItem(
+        <div>
+          <FormItem style={{ ...itemStyle, width: '100px'}}>
+            {searchTypeProps(
+              <Select
+                placeholder="查询类型"
+                allowClear={false}
+                style={{width: '100%'}}
+                onSelect={(value) => {this.handleFieldChange(typeFiledName, value);}}
+                >
+              { searchTypeOptions }
+              </Select>
+            )}
+          </FormItem>
           {mappingTypeNode}
-          <Col {...searchValueSize}>
-            <FormItem>
-              {searchValueNode}
-            </FormItem>
-          </Col>
-        </Col>
+          <FormItem style={{ ...itemStyle, width: '150px'}}>
+            {searchValueNode}
+          </FormItem>
+        </div>,
+        {fieldName: 'normal', paddingLeft: 8, paddingRight: 8}
       );
     }
   }
@@ -278,41 +271,93 @@ class TableSearchBar extends React.Component<TableSearchBarProps, any> {
   }
 
   renderSelectItem = (selectOptions: SelectDecorator) => {
-    const { getFieldDecorator } = this.props.form;
-    let initialValue = selectOptions.defaultValue ? selectOptions.defaultValue.toString() : undefined;
-    if (this.props.tableState.queryData
-    && typeof this.props.tableState.queryData[selectOptions.fieldName] !== 'undefined') {
-      initialValue = this.props.tableState.queryData[selectOptions.fieldName].toString();
+    const { queryData, form } = this.props;
+    const { getFieldDecorator } = form;
+    let defaultValue = undefined;
+    if (selectOptions.mode === 'multiple') {
+      defaultValue = selectOptions.defaultValue ? selectOptions.defaultValue : undefined;
+    }else {
+      defaultValue = selectOptions.defaultValue ? selectOptions.defaultValue.toString() : undefined;
+    }
+    let initialValue = getInitialValue(
+      queryData,
+      selectOptions.fieldName,
+      defaultValue,
+    );
+    if (initialValue !== undefined && initialValue !== null) {
+      if (selectOptions.mode === 'multiple') {
+        initialValue = initialValue.map(item => {
+          return item.toString();
+        });
+      }else {
+        initialValue = initialValue.toString();
+      }
     }
     let allowClear = true;
     if (typeof selectOptions.allowClear !== 'undefined') {
       allowClear = selectOptions.allowClear;
     }
     let itemWidth = `${selectOptions.width || 120}px`;
-    return (
-      <Col key={selectOptions.fieldName} xs={24} sm={4} md={4} lg={2} style={{width: itemWidth}}>
+    let options = selectOptions.options;
+    if (selectOptions.filter) {
+      options = selectOptions.filter(this.getSearchParams(), options);
+    }
+
+    let style: React.CSSProperties = {
+      minWidth: itemWidth,
+    };
+
+    return this.renderItem(
+      <div>
         <FormItem>
           {getFieldDecorator (selectOptions.fieldName, {
             initialValue: initialValue,
             rules: [{
+              type: selectOptions.mode === 'multiple' ? 'array' : 'string',
               validator: this.checkSortSelect.bind(this, selectOptions.searchImmediately),
             }],
           })(
             <Select
               allowClear={allowClear}
               placeholder={selectOptions.placeholder || ''}
-              onSelect={(value) => {
-                let result = this.getSelectItemValue(value);
+              onChange={(value) => {
+                let result;
+                if (selectOptions.mode === 'multiple') {
+                  result = value ? (value as any[]).map(item => this.getSelectItemValue(item)) : undefined;
+                }else {
+                  result = this.getSelectItemValue(value);
+                }
                 this.handleFieldChange(selectOptions.fieldName, result);
+                if (selectOptions.resetFieldNameOnChange) {
+                  this.props.form.setFieldsValue({
+                    [selectOptions.resetFieldNameOnChange]: undefined,
+                  });
+                }
               }}
+              showSearch={selectOptions.showSearch}
+              filterOption={selectOptions.filterOption || null}
+              mode={selectOptions.mode ? selectOptions.mode : 'default'}
             >
-              {selectOptions.options.map((item, index) => {
-                return <Option key={index.toString()} value={item.value.toString()}>{item.text || item.name}</Option>;
+              {options.map((item, index) => {
+                let key = item.value.toString();
+                if (selectOptions.optionKey) {
+                  key = selectOptions.optionKey(item, index);
+                }
+                return (
+                  <Option
+                    key={key}
+                    value={item.value.toString()}
+                  >
+                    {item.text || item.name}
+                  </Option>
+                );
               })}
             </Select>
           )}
         </FormItem>
-      </Col>
+      </div>,
+      selectOptions,
+      style,
     );
   }
 
@@ -320,8 +365,8 @@ class TableSearchBar extends React.Component<TableSearchBarProps, any> {
     const { getFieldDecorator  } = this.props.form;
     let options = cascader.options;
     let initialValue = undefined;
-    let queryValue = this.props.tableState.queryData[cascader.fieldName];
-    if (this.props.tableState.queryData && queryValue !== undefined) {
+    let queryValue = this.props.queryData[cascader.fieldName];
+    if (this.props.queryData && queryValue !== undefined) {
       options.forEach(option => {
         option.children.forEach(item => {
           if (item.value === queryValue[0]) {
@@ -337,8 +382,11 @@ class TableSearchBar extends React.Component<TableSearchBarProps, any> {
     if (cascader.filter) {
       options = options.filter(cascader.filter);
     }
-    return (
-      <Col xs={24} sm={6} md={6} lg={3} key={cascader.fieldName}>
+
+    let itemWidth = `${cascader.width || 170}px`;
+
+    return this.renderItem(
+      <div>
         <FormItem>
         {getFieldDecorator (cascader.fieldName, {
           initialValue: initialValue,
@@ -348,12 +396,14 @@ class TableSearchBar extends React.Component<TableSearchBarProps, any> {
           placeholder={cascader.placeholder}
           allowClear={allowClear}
           onChange={value => {
-            this.handleFieldChange(cascader.fieldName, value ? value[1] : undefined);
+            this.handleFieldChange(cascader.fieldName, value ? [value[value.length - 1]] : undefined);
           }}
           />
         )}
         </FormItem>
-      </Col>
+      </div>,
+      cascader,
+      {width: itemWidth}
     );
   }
 
@@ -383,9 +433,36 @@ class TableSearchBar extends React.Component<TableSearchBarProps, any> {
     }
   }
 
+  renderSimpleDateItem = (date: SimpleDateDecorator) => {
+    const { getFieldDecorator } = this.props.form;
+    let defaultValues = date.defaultValue || null;
+    let format = date.format || DATETIME_FORMAT;
+
+    return this.renderItem(
+      <div>
+        <FormItem>
+          {getFieldDecorator (date.fieldName, {
+            initialValue: defaultValues,
+          })(
+            <DatePicker
+              showTime={date.showTime}
+              format={format}
+              onChange={(newDate) => {
+                let result = newDate ? newDate.format(format) : undefined;
+                this.handleFieldChange(date.fieldName, result);
+              }}
+            />
+          )}
+        </FormItem>
+      </div>,
+      date,
+      { width: '180px' },
+    );
+  }
+
   renderDateItem = (date: DateDecorator) => {
     const { getFieldDecorator } = this.props.form;
-    const { queryData } = this.props.tableState;
+    const { queryData } = this.props;
     let fieldNames = date.fieldNames || defaultDateFieldNames;
     let startTimeFieldName = fieldNames[0];
     let endTimeFieldName = fieldNames[1];
@@ -393,18 +470,18 @@ class TableSearchBar extends React.Component<TableSearchBarProps, any> {
     if (defaultValues.length === 1) {
       defaultValues.push(null);
     }
-    let startTimeInitialValue = defaultValues[0];
-    if (queryData && queryData[startTimeFieldName]) {
-      startTimeInitialValue = moment(queryData[startTimeFieldName]);
+    let startTimeInitialValue = getInitialValue(queryData, startTimeFieldName, defaultValues[0]);
+    if (startTimeInitialValue !== null) {
+      startTimeInitialValue = moment(startTimeInitialValue);
     }
-    let endTimeInitialValue = defaultValues[1];
-    if (queryData && queryData[endTimeFieldName]) {
-      endTimeInitialValue = moment(queryData[endTimeFieldName]);
+    let endTimeInitialValue = getInitialValue(queryData, endTimeFieldName, defaultValues[1]);
+    if (endTimeInitialValue !== null) {
+      endTimeInitialValue = moment(endTimeInitialValue);
     }
     let advanceDateSelectNode = null;
     if (date.isAdvanceTimeRange) {
       advanceDateSelectNode = (
-        <Col xs={24} sm={4} md={4} lg={2} style={{ width: '155px', padding: '0 8px 0 0' }}>
+        <div style={{ paddingLeft: '8px', ...itemStyle }}>
           <FormItem>
             <RadioGroup
             onChange={this.handleAdvanceDateRangeSelected.bind(this, startTimeFieldName, endTimeFieldName)}
@@ -414,19 +491,16 @@ class TableSearchBar extends React.Component<TableSearchBarProps, any> {
               })}
             </RadioGroup>
           </FormItem>
-        </Col>
+        </div>
       );
     }
     // 时间类型
     let advanceTypeNode = null;
     if (date.advanceType) {
       let advanceTypeFiledName = date.advanceType.fieldName;
-      let initialValue = date.defaultValue || 1;
-      if (queryData && queryData[advanceTypeFiledName]) {
-        initialValue = queryData[advanceTypeFiledName];
-      }
+      let initialValue = getInitialValue(queryData, advanceTypeFiledName, date.defaultValue || 1);
       advanceTypeNode = (
-        <Col xs={24} sm={4} md={4} lg={2} style={{ width: '155px', padding: '0 0 0 8px'}}>
+        <div style={{ ...itemStyle}}>
           <FormItem>
             {getFieldDecorator(advanceTypeFiledName, {
               rules: [{
@@ -447,7 +521,7 @@ class TableSearchBar extends React.Component<TableSearchBarProps, any> {
               </Select>
             )}
           </FormItem>
-        </Col>
+        </div>
       );
     }
     let label = date.label;
@@ -456,115 +530,111 @@ class TableSearchBar extends React.Component<TableSearchBarProps, any> {
       label = '';
       labelCol = {span: 0};
     }
+    if (label) {
+      label += ': ';
+    }
     let datePickerStyle: React.CSSProperties = {
-      width: '185px',
+      ...itemStyle,
     };
-    return [
-      advanceTypeNode,
-      (
-      <Col xs={17} sm={15} md={13} lg={4}
-        style={{ width: '390px', padding: '0' }}
-        key={startTimeFieldName}
-      >
-        <FormItem
-            label={label}
-            labelCol={labelCol}>
-          <Col span={8} style={datePickerStyle}>
+    let format = date.format || DATETIME_FORMAT;
+    return this.renderItem(
+      <div>
+        {advanceTypeNode}
+        <div
+          style={{...itemStyle }}
+        >
+          {label}
+          <div style={datePickerStyle}>
             <FormItem>
               {getFieldDecorator (startTimeFieldName, {
                 initialValue: startTimeInitialValue,
               })(
                 <DatePicker
-                  showTime
-                    format={DATETIME_FORMAT}
+                  showTime={date.showTime}
+                  format={format}
                   defaultPickerValue={moment().set('hour', 0).set('minute', 0).set('second', 0)}
                   onChange={(newDate) => {
-                    let result = newDate ? newDate.format(DATETIME_FORMAT) : undefined;
+                    let result = newDate ? newDate.format(format) : undefined;
                     this.handleFieldChange(startTimeFieldName, result);
                   }}
                   style={datePickerStyle}
                 />
               )}
             </FormItem>
-          </Col>
-          <Col span={1}>
-            <p className="ant-form-split">-</p>
-          </Col>
-          <Col span={8} style={datePickerStyle}>
+          </div>
+          <div style={datePickerStyle}><FormItem>-</FormItem></div>
+          <div style={datePickerStyle}>
             <FormItem>
               {getFieldDecorator (endTimeFieldName, {
                 initialValue: endTimeInitialValue,
               })(
                 <DatePicker
-                  showTime
-                  format={DATETIME_FORMAT}
+                  showTime={date.showTime}
+                  format={format}
                   defaultPickerValue={moment().set('hour', 23).set('minute', 59).set('second', 59)}
                   onChange={(newDate) => {
-                    let result = newDate ? newDate.format(DATETIME_FORMAT) : undefined;
+                    let result = newDate ? newDate.format(format) : undefined;
                     this.handleFieldChange(endTimeFieldName, result);
                   }}
                   style={datePickerStyle}
                 />
               )}
             </FormItem>
-          </Col>
-        </FormItem>
-      </Col>),
-      advanceDateSelectNode,
-    ];
+          </div>
+        </div>
+        {advanceDateSelectNode}
+      </div>,
+      date,
+    );
   }
 
   renderInputNumberItem = (obj: InputNumberDecorator) => {
-    const { getFieldDecorator  } = this.props.form;
-    let initialValue = undefined;
-    if (this.props.tableState.queryData && this.props.tableState.queryData[obj.fieldName]) {
-      initialValue = this.props.tableState.queryData[obj.fieldName];
-    }
+    const { queryData, form } = this.props;
+    const { getFieldDecorator  } = form;
+    let initialValue = getInitialValue(queryData, obj.fieldName, undefined);
     let width = obj.width || 180;
-    return (
-      <Col xs={24} sm={6} md={6} lg={3} key={obj.fieldName} style={{width: `${width + 10}px`}}>
+
+    return this.renderItem(
+      <div>
         <FormItem
-        labelCol={obj.labelCol || {span: 14}}
-        wrapperCol={obj.wrapperCol || {span: 10}}
         >
         {getFieldDecorator (obj.fieldName, {
           initialValue: initialValue,
         })(
           <InputNumber
           placeholder={obj.placeholder}
-          style={{width: `${width}px`}}
+          style={{width: `${width}px`, margin: '0'}}
           onChange={(value) => {
             this.handleFieldChange(obj.fieldName, value);
           }}
           />
         )}
         </FormItem>
-      </Col>
+      </div>,
+      obj,
     );
   }
 
   renderInputItem = (obj: InputDecorator) => {
-    const { getFieldDecorator  } = this.props.form;
-    let initialValue = undefined;
-    if (this.props.tableState.queryData && this.props.tableState.queryData[obj.fieldName]) {
-      initialValue = this.props.tableState.queryData[obj.fieldName];
-    }
-    let width = 180;
-    return (
-      <Col xs={24} sm={6} md={6} lg={3} key={obj.fieldName} style={{width: `${width}px`}}>
-        <FormItem
-        wrapperCol={obj.wrapperCol || {span: 24}}
-        >
+    const { queryData, form } = this.props;
+    const { getFieldDecorator  } = form;
+    let initialValue = getInitialValue(queryData, obj.fieldName, undefined);
+    let width = obj.width || 180;
+    return this.renderItem(
+      <div>
+        <FormItem>
         {getFieldDecorator (obj.fieldName, {
           initialValue: initialValue,
         })(
           <Input
           placeholder={obj.placeholder}
           onChange={(e: any) => {this.handleFieldChange(obj.fieldName, e.target.value);}}
+          style={{width: `${width}px`}}
           />
         )}
         </FormItem>
-      </Col>
+      </div>,
+      obj,
     );
   }
 
@@ -581,6 +651,8 @@ class TableSearchBar extends React.Component<TableSearchBarProps, any> {
           return this.renderInputNumberItem(item.props as InputNumberDecorator);
         case 'input':
           return this.renderInputItem(item.props as InputDecorator);
+        case 'simpleDate':
+          return this.renderSimpleDateItem(item.props as SimpleDateDecorator);
         default:
           return null;
       }
@@ -590,8 +662,8 @@ class TableSearchBar extends React.Component<TableSearchBarProps, any> {
   renderSearchButtons = () => {
     const { small } = this.props;
     if ((this.props.searchTypes || this.props.advanceSearchs.length > 0)) {
-      return (
-        <Col xs={8} sm={8} md={7} lg={4} style={{ width: '170px' }}>
+      return this.renderItem(
+        <div>
           <FormItem>
             <Button
               size={small ? 'small' : null}
@@ -602,7 +674,8 @@ class TableSearchBar extends React.Component<TableSearchBarProps, any> {
             </Button>
             <Button size={small ? 'small' : null} onClick={this.handleReset} >重置</Button>
           </FormItem>
-        </Col>
+        </div>,
+        {fieldName: 'buttons'}
       );
     }
   }
@@ -627,24 +700,31 @@ class TableSearchBar extends React.Component<TableSearchBarProps, any> {
   }
 
   getAdvanceSearchFieldValues = (reset: boolean = false) => {
-    let queryData = this.props.form.getFieldsValue();
+    const { queryData } = this.props;
     const { getFieldValue } = this.props.form;
     let advanceSearchSelectFields = {};
-    const setSelectValue = (fieldName: string, defaultValue) => {
+    const setSelectValue = (selectItem: SelectDecorator) => {
+      let fieldName = selectItem.fieldName;
+      let defaultValue = selectItem.defaultValue;
       if (reset) {
         advanceSearchSelectFields[fieldName] = defaultValue;
         return;
       }
       let formValue = this.props.form.getFieldValue(fieldName);
+      let value = undefined;
       if (typeof formValue !== 'undefined') {
-        advanceSearchSelectFields[fieldName] = this.getSelectItemValue(formValue);
-      }else {
-        if (typeof queryData[fieldName] !== 'undefined') {
-          advanceSearchSelectFields[fieldName] = queryData[fieldName];
+        if (selectItem.mode === 'multiple') {
+          value = formValue.map(item => this.getSelectItemValue(item));
+          if (value.length === 0) {
+            value = undefined;
+          }
         }else {
-          advanceSearchSelectFields[fieldName] = defaultValue;
+          value = this.getSelectItemValue(formValue);
         }
+      }else {
+        advanceSearchSelectFields[fieldName] = getInitialValue(queryData, fieldName, defaultValue);
       }
+      advanceSearchSelectFields[fieldName] = value;
     };
     const setDateValue = (date: DateDecorator) => {
       let { fieldNames, defaultValue, advanceType } = date;
@@ -660,8 +740,9 @@ class TableSearchBar extends React.Component<TableSearchBarProps, any> {
       }
       let start = getFieldValue(fieldNames[0]) || undefined;
       let end = getFieldValue(fieldNames[1]) || undefined;
-      start ? start = start.format(DATETIME_FORMAT) : start = start;
-      end ? end = end.format(DATETIME_FORMAT) : end = end;
+      let format = date.format || DATETIME_FORMAT;
+      start ? start = start.format(format) : start = start;
+      end ? end = end.format(format) : end = end;
       advanceSearchSelectFields[fieldNames[0]] = start;
       advanceSearchSelectFields[fieldNames[1]] = end;
       if (advanceType) {
@@ -675,7 +756,7 @@ class TableSearchBar extends React.Component<TableSearchBarProps, any> {
          return;
       }
       let value = this.props.form.getFieldValue(fieldName);
-      advanceSearchSelectFields[fieldName] = value ? [value[1]] : undefined;
+      advanceSearchSelectFields[fieldName] = value ? [value[value.length - 1]] : undefined;
     };
     const setInputNumberValue = (fieldName: string, defaultValue: any) => {
       if (reset) {
@@ -693,11 +774,19 @@ class TableSearchBar extends React.Component<TableSearchBarProps, any> {
       let value = this.props.form.getFieldValue(fieldName);
       advanceSearchSelectFields[fieldName] = value;
     };
+    const setSimpleDateValue = (date: SimpleDateDecorator) => {
+      let dateValue = getFieldValue(date.fieldName) || undefined;
+      let dateFormatValue = undefined;
+      if (dateValue) {
+        dateFormatValue = dateValue.format(date.format || DATETIME_FORMAT);
+      }
+      advanceSearchSelectFields[date.fieldName] = dateFormatValue;
+    };
     this.props.advanceSearchs.forEach(item => {
       switch (item.type) {
         case 'select':
           let select = item.props as SelectDecorator;
-          setSelectValue(select.fieldName, select.defaultValue);
+          setSelectValue(select);
           break;
         case 'date':
           let date = item.props as DateDecorator;
@@ -715,6 +804,8 @@ class TableSearchBar extends React.Component<TableSearchBarProps, any> {
           let input = item.props as InputDecorator;
           setInputValue(input.fieldName, input.defaultValue);
           break;
+        case 'simpleDate':
+          setSimpleDateValue(item.props as SimpleDateDecorator);
         default:
       }
     });
@@ -724,10 +815,19 @@ class TableSearchBar extends React.Component<TableSearchBarProps, any> {
   handleReset = () => {
     this.props.form.resetFields();
     let advanceSearchSelectFields = this.getAdvanceSearchFieldValues(true);
+    let [searchTypeFiledName, mappingTypeFieldName] = this.getSearchTypeFieldName();
+    let searchType = this.props.form.getFieldValue(searchTypeFiledName);
+    let mappingType = this.props.form.getFieldValue(mappingTypeFieldName);
+    if (mappingType) {
+      mappingType = parseInt(mappingType, 0);
+    }
+    if (searchType) {
+      searchType = parseInt(searchType, 0);
+    }
     this.props.onReset({
-      pageNo: 1,
-      pageSize: 10,
       ...advanceSearchSelectFields,
+      [searchTypeFiledName]: searchType,
+      [mappingTypeFieldName]: mappingType,
     });
   }
 
@@ -760,8 +860,6 @@ class TableSearchBar extends React.Component<TableSearchBarProps, any> {
       searchType = parseInt(searchType, 0);
     }
     let params = {
-      pageNo: 1,
-      pageSize: this.props.tableState.pagination.pageSize,
       [searchTypeFiledName]: searchType,
       [mappingTypeFieldName]: mappingType,
       searchValue,
@@ -785,17 +883,17 @@ class TableSearchBar extends React.Component<TableSearchBarProps, any> {
     return (
       <Form layout="horizontal" className={this.props.className}>
         {this.renderActions()}
-        <Row gutter={16} type="flex"  align="middle" style={{margin: '0'}}>
+        <div style={{margin: '0'}}>
           {this.renderNormalSearch()}
           {this.renderAdvanceSearch()}
           {this.renderSearchButtons()}
-        </Row>
+        </div>
       </Form>
     );
   }
 }
 
-export default Form.create<TableSearchBarOwnProps>()(TableSearchBar);
+export default Form.create<TableSearchBarOwnProps>()(TableSearchBar) as React.ComponentClass<TableSearchBarOwnProps>;
 
 function getCurrentWeek() {
   // 起止日期数组  
@@ -870,4 +968,19 @@ export function getAdvanceSearchDefaultValues(searchs: AdvanceSearchDecorator[] 
   });
 
   return params;
+}
+
+function getItemPadding(item: BaseSearchDecorator) {
+  let paddingLeft = item.paddingLeft !== undefined ? `${item.paddingLeft}px` : '8px';
+  let paddingRight = item.paddingRight !== undefined ? `${item.paddingRight}px` : '8px';
+  return `0 ${paddingRight} 0 ${paddingLeft}`;
+}
+
+function getInitialValue(queryData: any, fieldName: string, defaultValue) {
+  let initialValue = defaultValue;
+  if (queryData && queryData[fieldName] !== undefined) {
+    initialValue = queryData[fieldName];
+  }
+
+  return initialValue;
 }
