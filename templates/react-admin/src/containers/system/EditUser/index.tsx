@@ -49,7 +49,7 @@ class EditUser extends React.Component<EditUserProps, any> {
       if (!!errors) {
         return;
       }
-      let payload = {
+      let payload: any = {
         ...token,
         maUsername: values.maUsername,
       };

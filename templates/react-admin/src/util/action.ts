@@ -9,7 +9,7 @@ export function createSimpleAction(actionName) {
 }
 
 export function initAction<T>(keys: any, modelName: string) {
-  let actions: {[p in keyof T]: ActionFunctionAny<Action<{}>>} = {} as any;
+  let actions: {[p in keyof T]: ActionFunctionAny<Action<any>>} = {} as any;
   let actionNames: {[p in keyof T]: string} = {} as any;
 
   Object.keys(keys).forEach(key => {

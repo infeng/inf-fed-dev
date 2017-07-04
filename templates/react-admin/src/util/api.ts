@@ -125,7 +125,7 @@ function makeEffect(api: ApiConfig, request: any, actionNames: ApiActionNames) {
     const {except, ...others} = req.payload;
     try {
       const response = yield call(request, others);
-      yield put(createAction(actionNames.success)({
+      yield put(createAction<any>(actionNames.success)({
         req: req.payload,
         res: response,
       }));
@@ -135,9 +135,9 @@ function makeEffect(api: ApiConfig, request: any, actionNames: ApiActionNames) {
       console.error(`request params`, req.payload);
       console.error(`message`, error);
       if (error.status === -101) {
-        yield put(createAction('loginTimeout')({}));
+        yield put(createAction<any>('loginTimeout')({}));
       }
-      yield put(createAction(actionNames.error)({
+      yield put(createAction<any>(actionNames.error)({
         req: req.payload,
         error: error,
         except: Object.assign({}, except),
@@ -178,7 +178,7 @@ function redirect(actionNames: ApiActionNames, apiSaga: any, redirectObj: Redire
       const res = yield call(apiSaga, req);
       if (res) {
         message.success(redirectObj.message || '操作成功');
-        yield put(createAction('sidebar/updatePane')({
+        yield put(createAction<any>('sidebar/updatePane')({
           componentName: redirectObj.componentName,
         }));
       }
