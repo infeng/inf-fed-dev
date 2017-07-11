@@ -37,7 +37,7 @@ export const sagas = api.sagas;
 
 export interface EditPasswordState {
   loading: boolean;
-};
+}
 
 export const reducer = handleActions<EditPasswordState, any>({
   [apiActionNames.editPassword.request](state, action) {

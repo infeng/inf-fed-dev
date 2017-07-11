@@ -28,7 +28,7 @@ class Back extends React.Component<BackProps, any> {
     super(props);
   }
 
-  handleBack() {
+  handleBack = () => {
     const { options, componentName } = this.props;
     let params: any = {
       componentName: componentName,
@@ -47,12 +47,13 @@ class Back extends React.Component<BackProps, any> {
       <div>
       <div style={{ position: 'fixed', zIndex: 10 }}>
         <Button
-        style={this.props.style || {}}
-        onClick={this.handleBack.bind(this)}>
-        返回
+          style={this.props.style || {}}
+          onClick={this.handleBack}
+        >
+          返回
         </Button>
       </div>
-      <div style={{ top: '38px', height: '38px' }}></div>
+      <div style={{ top: '38px', height: '38px' }} />
       </div>
     );
   }

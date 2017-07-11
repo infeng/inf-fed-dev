@@ -14,7 +14,7 @@ export interface LoginProps extends ApiComponentProps<LoginState> {
 }
 
 class Login extends React.Component<LoginProps, any> {
-  handleSubmit(e) {
+  handleSubmit = (e) => {
     e.preventDefault();
     const { dispatch, form } = this.props;
     form.validateFields((errors, values) => {
@@ -33,8 +33,8 @@ class Login extends React.Component<LoginProps, any> {
         <h1 className={`${prefixCls}-title`}>管理后台</h1>
         <Card className={`${prefixCls}-card`}>
           <Form
-          layout="horizontal"
-          onSubmit={this.handleSubmit.bind(this)}
+            layout="horizontal"
+            onSubmit={this.handleSubmit}
           >
             <FormItem>
                 {getFieldDecorator('username', {

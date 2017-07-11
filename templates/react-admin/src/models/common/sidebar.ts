@@ -1,7 +1,7 @@
 import { initAction } from '../../util/action';
 import { handleActions } from 'redux-actions';
 import { getComponentName } from '../../util/common';
-import { delay} from 'redux-saga';
+import { delay } from 'redux-saga';
 import { take, put } from 'redux-saga/effects';
 import { initApi, ApiConfig } from '../../util/api';
 
@@ -98,7 +98,7 @@ export interface SidebarState {
   activeSubMenu: string;
   activePath: string;
   paneConfigs: PaneConfig[];
-};
+}
 
 export const reducer = handleActions<SidebarState, any>({
   [actionNames.changeSubMenu](state, action) {
@@ -209,7 +209,7 @@ export const reducer = handleActions<SidebarState, any>({
       activePath: '',
       paneConfigs: [],
     };
-  },  
+  },
   [apiActionNames.logout.success](state, action) {
     return {
       ...state,

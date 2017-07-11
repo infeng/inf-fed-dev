@@ -83,7 +83,7 @@ export interface LoginState {
   name: string;
   username: string;
   getOperatorInfoError: boolean;
-};
+}
 
 const initialState = {
   name: '',
@@ -137,7 +137,7 @@ export const reducer = handleActions<LoginState, any>({
       ...state,
       ...initialState,
     };
-  },   
+  },
   [apiActionNames.getOperatorInfo.request](state, action) {
     return {
       ...state,

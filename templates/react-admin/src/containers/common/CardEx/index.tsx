@@ -46,8 +46,8 @@ class CardEx extends React.Component<CardExProps, any> {
 
     return (
       <div
-      {...CardProps}
-      style={{height: height, ...this.props.style}}
+        {...CardProps}
+        style={{ height: height, ...this.props.style }}
       >
         {loading ? <Loading /> : this.props.children}
       </div>

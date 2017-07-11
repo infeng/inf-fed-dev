@@ -36,7 +36,7 @@ export const sagas = api.sagas;
 export interface <%= componentName %>State {
   loading: boolean;
   name: string;
-};
+}
 
 export const reducer = handleActions<<%= componentName %>State, any>({
   [apiActionNames.getName.request](state, action) {

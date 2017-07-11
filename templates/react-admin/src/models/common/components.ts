@@ -20,13 +20,13 @@ export interface ComponentsState {
   components: {
     [key: string]: any;
   };
-};
+}
 
 export const reducer = handleActions<ComponentsState, any>({
   [actionNames.addComponents](state, action) {
     return {
       ...state,
-      components: {...state.components, ...action.payload.components},
+      components: { ...state.components, ...action.payload.components },
     };
   },
 }, {

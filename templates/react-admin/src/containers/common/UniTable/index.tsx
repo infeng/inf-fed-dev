@@ -132,7 +132,7 @@ class UniTable extends React.Component<UniTableProps, Partial<UniTableState>> {
     this.state = {
       selectedRows: [],
       selectedRowKeys: [],
-      formValues: {...advanceSearchSelectFields, ...this.props.transformQueryDataIn(props.tableState.queryData)},
+      formValues: { ...advanceSearchSelectFields, ...this.props.transformQueryDataIn(props.tableState.queryData) },
     };
   }
 
@@ -173,7 +173,7 @@ class UniTable extends React.Component<UniTableProps, Partial<UniTableState>> {
     };
     const { pageNo, pageSize, ...rest } = queryData;
     let advanceSearchParams = this.props.transformQueryDataOut(rest, sorterParams);
-    dispatch(apiAction({pageNo, pageSize, ...token, ...advanceSearchParams, ...otherParams, except}));
+    dispatch(apiAction({ pageNo, pageSize, ...token, ...advanceSearchParams, ...otherParams, except }));
   }
 
   onSelectChange(selectedKeys, selectedRows) {
@@ -184,7 +184,7 @@ class UniTable extends React.Component<UniTableProps, Partial<UniTableState>> {
     this.props.rowSelection(selectedKeys, selectedRows);
   }
 
-  handleTableChange(pagination, filters, sorter) {
+  handleTableChange = (pagination, filters, sorter) => {
     let params = {
       pageNo: pagination.current,
       pageSize: pagination.pageSize,
@@ -202,7 +202,7 @@ class UniTable extends React.Component<UniTableProps, Partial<UniTableState>> {
         };
       }
     });
-    this.getList({...advanceSearchSelectFields, ...params}, sorterState);
+    this.getList({ ...advanceSearchSelectFields, ...params }, sorterState);
     this.setState({
       selectedRows: [],
       selectedRowKeys: [],
@@ -255,18 +255,18 @@ class UniTable extends React.Component<UniTableProps, Partial<UniTableState>> {
 
       return (
         <TableSearchBar
-        onReset={this.handleReset}
-        onSearch={this.handleSearch}
-        toolbarButtons={this.props.toolbarButtons}
-        noMappingType={this.props.noMappingType}
-        searchTypes={this.props.searchTypes}
-        advanceSearchs={this.props.advanceSearchs}
-        selectedRowsLength={this.state.selectedRows.length}
-        onActionClick={this.handleActionClick}
-        onFieldChange={this.handleFieldChange}
-        className={this.props.toolbarClassName}
-        small={this.props.smallToolbar}
-        queryData={queryData}
+          onReset={this.handleReset}
+          onSearch={this.handleSearch}
+          toolbarButtons={this.props.toolbarButtons}
+          noMappingType={this.props.noMappingType}
+          searchTypes={this.props.searchTypes}
+          advanceSearchs={this.props.advanceSearchs}
+          selectedRowsLength={this.state.selectedRows.length}
+          onActionClick={this.handleActionClick}
+          onFieldChange={this.handleFieldChange}
+          className={this.props.toolbarClassName}
+          small={this.props.smallToolbar}
+          queryData={queryData}
         />
       );
     }
@@ -340,7 +340,7 @@ class UniTable extends React.Component<UniTableProps, Partial<UniTableState>> {
       selectedRowKeys: this.state.selectedRowKeys,
     };
 
-    let bodyStyle = { height: `${bodyHeight}px`};
+    let bodyStyle = { height: `${bodyHeight}px` };
 
     let rowClassName = this.props.rowClassName;
     if (typeof rowClassName === 'string') {
@@ -391,7 +391,7 @@ class UniTable extends React.Component<UniTableProps, Partial<UniTableState>> {
             dataSource={data}
             columns={this.columns}
             rowKey={rowKey}
-            onChange={this.handleTableChange.bind(this)}
+            onChange={this.handleTableChange}
             rowSelection={this.props.hasRowSelection ? this.rowSelection : null}
             pagination={pagination}
             loading={loading}
@@ -399,7 +399,7 @@ class UniTable extends React.Component<UniTableProps, Partial<UniTableState>> {
             rowClassName={rowClassName}
             bodyStyle={bodyStyle}
             {...expandProps}
-           />
+          />
         </Row>
      </div>
     );

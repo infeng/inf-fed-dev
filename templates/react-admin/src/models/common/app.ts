@@ -21,7 +21,7 @@ export interface AppState {
   width: number;
   height: number;
   mainHeight: number;
-};
+}
 
 export const reducer = handleActions<AppState, any>({
   [actionNames.resize](state, action) {

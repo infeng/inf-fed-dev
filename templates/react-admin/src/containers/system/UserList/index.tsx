@@ -87,7 +87,7 @@ class UserList extends React.Component<UserListProps, any> {
             componentName: 'operatorList',
           },
         },
-          {userId: null}
+          { userId: null }
         );
       },
       enableForAll: true,
@@ -100,7 +100,7 @@ class UserList extends React.Component<UserListProps, any> {
         apiAction={apiActions.getUserList}
         tableState={data}
         toolbarButtons={toolbarButtons}
-        hasToolbar={true}
+        hasToolbar
         searchTypes={searchTypes}
         advanceSearchs={advanceSearchs}
       />

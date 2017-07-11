@@ -41,7 +41,7 @@ export const sagas = api.sagas;
 
 export interface UserListState extends ListState<any> {
 
-};
+}
 
 const listHandle = makeListHandleActions(apiActionNames[apis.getUserList]);
 

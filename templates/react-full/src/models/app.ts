@@ -37,7 +37,7 @@ export const sagas = api.sagas;
 export interface AppState {
   loading: boolean;
   name: string;
-};
+}
 
 export const reducer = handleActions<AppState, any>({
   [apiActionNames.getName.request](state, action) {

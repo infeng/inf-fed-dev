@@ -159,9 +159,10 @@ class TableSearchBar extends React.Component<TableSearchBarProps, any> {
             loading={button.loading || false}
             disabled={(this.props.selectedRowsLength === 0 && !button.enableForAll) || disabled}
             key={button.key}
-            style={{marginRight:5}}
-            type={button.type as ButtonType} icon={button.icon}
-            onClick={() => {this.props.onActionClick(button.onClick);}}
+            style={{ marginRight: 5 }}
+            type={button.type as ButtonType}
+            icon={button.icon}
+            onClick={() => { this.props.onActionClick(button.onClick); }}
           >
             {button.text}
           </Button>
@@ -179,7 +180,7 @@ class TableSearchBar extends React.Component<TableSearchBarProps, any> {
   renderItem = (children: React.ReactNode, options: BaseSearchDecorator, style?: React.CSSProperties) => {
     return (
       <div
-        style={{...itemStyle, padding: getItemPadding(options), ...style}}
+        style={{ ...itemStyle, padding: getItemPadding(options), ...style }}
         key={options.fieldName}
       >
         {children}
@@ -202,15 +203,15 @@ class TableSearchBar extends React.Component<TableSearchBarProps, any> {
       const mappingTypeNode = this.props.noMappingType ?
       '' :
       (
-        <FormItem style={{ ...itemStyle, width: '80px'}}>
+        <FormItem style={{ ...itemStyle, width: '80px' }}>
           {getFieldDecorator (mappingTypeFieldName, {
             initialValue: mappingTypeInitialValue.toString(),
           })(
             <Select
               placeholder="匹配模式"
               allowClear={false}
-              style={{width: '100%'}}
-              onSelect={(value) => {this.handleFieldChange(mappingTypeFieldName, value);}}
+              style={{ width: '100%' }}
+              onSelect={(value) => { this.handleFieldChange(mappingTypeFieldName, value); }}
             >
               <Option key="1" value={'1'}>等于</Option>
               <Option key="2" value={'2'}>半模糊</Option>
@@ -232,7 +233,7 @@ class TableSearchBar extends React.Component<TableSearchBarProps, any> {
         <Input
           placeholder="查询关键词"
           size="default"
-          onChange={(e: any) => {this.handleFieldChange('searchValue', e.target.value);}}
+          onChange={(e: any) => { this.handleFieldChange('searchValue', e.target.value); }}
         />
       );
       let width = '405px';
@@ -241,24 +242,24 @@ class TableSearchBar extends React.Component<TableSearchBarProps, any> {
       }
       return this.renderItem(
         <div>
-          <FormItem style={{ ...itemStyle, width: '100px'}}>
+          <FormItem style={{ ...itemStyle, width: '100px' }}>
             {searchTypeProps(
               <Select
                 placeholder="查询类型"
                 allowClear={false}
-                style={{width: '100%'}}
-                onSelect={(value) => {this.handleFieldChange(typeFiledName, value);}}
-                >
-              { searchTypeOptions }
+                style={{ width: '100%' }}
+                onSelect={(value) => { this.handleFieldChange(typeFiledName, value); }}
+              >
+                {searchTypeOptions}
               </Select>
             )}
           </FormItem>
           {mappingTypeNode}
-          <FormItem style={{ ...itemStyle, width: '150px'}}>
+          <FormItem style={{ ...itemStyle, width: '150px' }}>
             {searchValueNode}
           </FormItem>
         </div>,
-        {fieldName: 'normal', paddingLeft: 8, paddingRight: 8}
+        { fieldName: 'normal', paddingLeft: 8, paddingRight: 8 }
       );
     }
   }
@@ -282,7 +283,7 @@ class TableSearchBar extends React.Component<TableSearchBarProps, any> {
     let initialValue = getInitialValue(
       queryData,
       selectOptions.fieldName,
-      defaultValue,
+      defaultValue
     );
     if (initialValue !== undefined && initialValue !== null) {
       if (selectOptions.mode === 'multiple') {
@@ -357,7 +358,7 @@ class TableSearchBar extends React.Component<TableSearchBarProps, any> {
         </FormItem>
       </div>,
       selectOptions,
-      style,
+      style
     );
   }
 
@@ -392,18 +393,18 @@ class TableSearchBar extends React.Component<TableSearchBarProps, any> {
           initialValue: initialValue,
         })(
           <Cascader
-          options={options}
-          placeholder={cascader.placeholder}
-          allowClear={allowClear}
-          onChange={value => {
-            this.handleFieldChange(cascader.fieldName, value ? [value[value.length - 1]] : undefined);
-          }}
+            options={options}
+            placeholder={cascader.placeholder}
+            allowClear={allowClear}
+            onChange={value => {
+              this.handleFieldChange(cascader.fieldName, value ? [value[value.length - 1]] : undefined);
+            }}
           />
         )}
         </FormItem>
       </div>,
       cascader,
-      {width: itemWidth}
+      { width: itemWidth }
     );
   }
 
@@ -456,7 +457,7 @@ class TableSearchBar extends React.Component<TableSearchBarProps, any> {
         </FormItem>
       </div>,
       date,
-      { width: '180px' },
+      { width: '180px' }
     );
   }
 
@@ -484,7 +485,7 @@ class TableSearchBar extends React.Component<TableSearchBarProps, any> {
         <div style={{ paddingLeft: '8px', ...itemStyle }}>
           <FormItem>
             <RadioGroup
-            onChange={this.handleAdvanceDateRangeSelected.bind(this, startTimeFieldName, endTimeFieldName)}
+              onChange={this.handleAdvanceDateRangeSelected.bind(this, startTimeFieldName, endTimeFieldName)}
             >
               {this.dateRange.map(item => {
                 return <Radio key={item.value.toString()} value={item.value} >{item.text}</Radio>;
@@ -500,7 +501,7 @@ class TableSearchBar extends React.Component<TableSearchBarProps, any> {
       let advanceTypeFiledName = date.advanceType.fieldName;
       let initialValue = getInitialValue(queryData, advanceTypeFiledName, date.defaultValue || 1);
       advanceTypeNode = (
-        <div style={{ ...itemStyle}}>
+        <div style={{ ...itemStyle }}>
           <FormItem>
             {getFieldDecorator(advanceTypeFiledName, {
               rules: [{
@@ -528,7 +529,7 @@ class TableSearchBar extends React.Component<TableSearchBarProps, any> {
     let labelCol = { span: 4 };
     if (date.advanceType) {
       label = '';
-      labelCol = {span: 0};
+      labelCol = { span: 0 };
     }
     if (label) {
       label += ': ';
@@ -541,7 +542,7 @@ class TableSearchBar extends React.Component<TableSearchBarProps, any> {
       <div>
         {advanceTypeNode}
         <div
-          style={{...itemStyle }}
+          style={{ ...itemStyle }}
         >
           {label}
           <div style={datePickerStyle}>
@@ -584,7 +585,7 @@ class TableSearchBar extends React.Component<TableSearchBarProps, any> {
         </div>
         {advanceDateSelectNode}
       </div>,
-      date,
+      date
     );
   }
 
@@ -602,16 +603,16 @@ class TableSearchBar extends React.Component<TableSearchBarProps, any> {
           initialValue: initialValue,
         })(
           <InputNumber
-          placeholder={obj.placeholder}
-          style={{width: `${width}px`, margin: '0'}}
-          onChange={(value) => {
-            this.handleFieldChange(obj.fieldName, value);
-          }}
+            placeholder={obj.placeholder}
+            style={{ width: `${width}px`, margin: '0' }}
+            onChange={(value) => {
+              this.handleFieldChange(obj.fieldName, value);
+            }}
           />
         )}
         </FormItem>
       </div>,
-      obj,
+      obj
     );
   }
 
@@ -627,14 +628,14 @@ class TableSearchBar extends React.Component<TableSearchBarProps, any> {
           initialValue: initialValue,
         })(
           <Input
-          placeholder={obj.placeholder}
-          onChange={(e: any) => {this.handleFieldChange(obj.fieldName, e.target.value);}}
-          style={{width: `${width}px`}}
+            placeholder={obj.placeholder}
+            onChange={(e: any) => { this.handleFieldChange(obj.fieldName, e.target.value); }}
+            style={{ width: `${width}px` }}
           />
         )}
         </FormItem>
       </div>,
-      obj,
+      obj
     );
   }
 
@@ -667,7 +668,8 @@ class TableSearchBar extends React.Component<TableSearchBarProps, any> {
           <FormItem>
             <Button
               size={small ? 'small' : null}
-              type="primary" style={{marginRight:5}}
+              type="primary"
+              style={{ marginRight: 5 }}
               onClick={this.handleSearch}
             >
               查询
@@ -675,7 +677,7 @@ class TableSearchBar extends React.Component<TableSearchBarProps, any> {
             <Button size={small ? 'small' : null} onClick={this.handleReset} >重置</Button>
           </FormItem>
         </div>,
-        {fieldName: 'buttons'}
+        { fieldName: 'buttons' }
       );
     }
   }
@@ -883,7 +885,7 @@ class TableSearchBar extends React.Component<TableSearchBarProps, any> {
     return (
       <Form layout="horizontal" className={this.props.className}>
         {this.renderActions()}
-        <div style={{margin: '0'}}>
+        <div style={{ margin: '0' }}>
           {this.renderNormalSearch()}
           {this.renderAdvanceSearch()}
           {this.renderSearchButtons()}
@@ -896,57 +898,57 @@ class TableSearchBar extends React.Component<TableSearchBarProps, any> {
 export default Form.create<TableSearchBarOwnProps>()(TableSearchBar) as React.ComponentClass<TableSearchBarOwnProps>;
 
 function getCurrentWeek() {
-  // 起止日期数组  
+  // 起止日期数组
   let startStop = new Array();
-  // 获取当前时间  
+  // 获取当前时间
   let currentDate = moment();
-  // 返回date是一周中的某一天  
+  // 返回date是一周中的某一天
   let week = currentDate.day();
 
-  // 一天的毫秒数  
+  // 一天的毫秒数
   let millisecond = 1000 * 60 * 60 * 24;
-  // 减去的天数  
+  // 减去的天数
   let minusDay = week !== 0 ? week - 1 : 6;
-  // alert(minusDay);  
-  // 本周 周一  
+  // alert(minusDay);
+  // 本周 周一
   let monday = moment(
     moment(currentDate.unix() * 1000 - (minusDay * millisecond)).format('YYYY-MM-DD') + ' 00:00:00');
-  // 本周 周日  
+  // 本周 周日
   let sunday = moment(moment(monday.unix() * 1000 + (6 * millisecond)).format('YYYY-MM-DD') + ' 23:59:59');
-  // 添加本周时间  
+  // 添加本周时间
   startStop.push(monday); // 本周起始时间
-  // 添加本周最后一天时间  
+  // 添加本周最后一天时间
   startStop.push(sunday); // 本周终止时间
-  // 返回  
+  // 返回
   return startStop;
-};
+}
 
 function getCurrentMonth() {
   // 起止日期数组
   let startStop = new Array();
-  // 获取当前时间  
+  // 获取当前时间
   let currentDate = moment();
-  // 获得当前月份0-11  
+  // 获得当前月份0-11
   let currentMonth = currentDate.month();
-  // 获得当前年份4位年  
+  // 获得当前年份4位年
   let currentYear = currentDate.year();
-  // 求出本月第一天  
+  // 求出本月第一天
   let firstDay = moment().set('year', currentYear).set('month', currentMonth)
   .set('date', 1).set('hour', 0).set('minute', 0).set('second', 0);
 
-  // 当为12月的时候年份需要加1  
-  // 月份需要更新为0 也就是下一年的第一个月  
+  // 当为12月的时候年份需要加1
+  // 月份需要更新为0 也就是下一年的第一个月
   if (currentMonth === 11) {
       currentYear++;
-      currentMonth = 0; // 就为  
+      currentMonth = 0; // 就为
   }else {
-      // 否则只是月份增加,以便求的下一月的第一天  
+      // 否则只是月份增加,以便求的下一月的第一天
       currentMonth++;
   }
 
-  // 一天的毫秒数  
+  // 一天的毫秒数
   let millisecond = 1000 * 60 * 60 * 24;
-  // 下月的第一天  
+  // 下月的第一天
   let nextMonthDayOne = moment().set('year', currentYear).set('month', currentMonth).set('date', 1);
   // 求出上月的最后一天
   let lastDay = moment(moment(nextMonthDayOne.unix() * 1000 - millisecond).format('YYYY-MM-DD') + ' 23:59:59');

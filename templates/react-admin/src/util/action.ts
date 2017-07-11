@@ -22,4 +22,4 @@ export function initAction<T>(keys: any, modelName: string) {
     actions,
     actionNames,
   };
-};
+}

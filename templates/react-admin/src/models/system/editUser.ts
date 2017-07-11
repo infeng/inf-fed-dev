@@ -65,7 +65,7 @@ export interface EditUserState {
   roles: ValueText[];
   groups: ValueText[];
   maUsername: string;
-};
+}
 
 const initialState = {
   loading: false,

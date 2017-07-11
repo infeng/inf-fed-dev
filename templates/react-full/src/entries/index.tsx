@@ -18,7 +18,7 @@ let render = () => {
     <Provider store={store}>
       {routes(history)}
     </Provider>,
-    document.getElementById('root'),
+    document.getElementById('root')
   );
 };
 

@@ -15,10 +15,21 @@ export default class Loading extends React.Component<LoadingProps, any> {
   };
 
   render() {
-    return <div
-    style={{position: 'relative', textAlign: 'center', height:'100%', display: 'flex', justifyContent:'center'
-    , alignItems: 'center', ...this.props.style}}>
+    let style: React.CSSProperties = {
+      position: 'relative',
+      textAlign: 'center',
+      height: '100%',
+      display: 'flex',
+      justifyContent: 'center',
+      alignItems: 'center', ...this.props.style,
+    };
+
+    return (
+    <div
+      style={style}
+    >
       <Spin />
-    </div>;
+    </div>
+    );
   }
 }

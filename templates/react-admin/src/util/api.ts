@@ -10,7 +10,7 @@ interface Redirect {
 }
 
 export interface ApiConfig {
-  /** 
+  /**
    * path (also use as action name)
    */
   path: string;
@@ -26,7 +26,7 @@ export interface ApiConfig {
    * Determine whether redirect other route when request success
    */
   redirect?: Redirect;
-  /** 
+  /**
    * action name
    */
   actionName: string;
@@ -122,7 +122,7 @@ function makeActionNames(modelName: string, api: ApiConfig): ApiActionNames {
 
 function makeEffect(api: ApiConfig, request: any, actionNames: ApiActionNames) {
   return function*(req) {
-    const {except, ...others} = req.payload;
+    const { except, ...others } = req.payload;
     try {
       const response = yield call(request, others);
       yield put(createAction<any>(actionNames.success)({
@@ -161,11 +161,11 @@ function showMessage(actionNames: ApiActionNames, apiSaga: any, successText: str
       const req = yield take(actionNames.request);
       const res = yield call(apiSaga, req);
       if (res) {
-        let showMessage = '操作成功';
+        let text = '操作成功';
         if (typeof successText === 'string') {
-          showMessage = successText;
+          text = successText;
         }
-        message.success(showMessage);
+        message.success(text);
       }
     }
   };

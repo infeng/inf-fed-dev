@@ -116,7 +116,8 @@ class EditUser extends React.Component<EditUserProps, any> {
                 <Button
                   onClick={this.handleSubmit}
                   type="primary"
-                  loading={data.loading}>
+                  loading={data.loading}
+                >
                   {isEdit ? '修改' : '创建'}
                 </Button>
               </FormItem>
@@ -131,8 +132,8 @@ class EditUser extends React.Component<EditUserProps, any> {
 const mapPropsToFields = (props: EditUserProps) => {
   let data = props.data;
   return {
-    [formFields.userName.name]: {value: data.userName},
-    [formFields.name.name]: {value: data.name},
+    [formFields.userName.name]: { value: data.userName },
+    [formFields.name.name]: { value: data.name },
   };
 };
 
@@ -142,7 +143,7 @@ const onValuesChange = (props: EditUserProps, values) => {
 };
 
 export default injectApi<EditUserOwnProps>(
-  Form.create({mapPropsToFields, onValuesChange})(EditUser),
+  Form.create({ mapPropsToFields, onValuesChange })(EditUser),
   {
     data: 'editUser',
   }

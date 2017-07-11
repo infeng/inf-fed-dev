@@ -44,7 +44,7 @@ export const sagas = api.sagas;
 export interface TokenState {
   token: string;
   operatorId: string;
-};
+}
 
 export const reducer = handleActions<TokenState, any>({
   [apiActionNames.login.success](state, action) {

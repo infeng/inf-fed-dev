@@ -13,7 +13,7 @@ class App extends React.Component<AppProps, any> {
     this.props.dispatch(apiActions.getName({}));
   }
 
-  handleChangeName(name) {
+  handleChangeName = (name) => {
     this.props.dispatch(actions.changeName({
       name: name,
     }));
@@ -23,8 +23,8 @@ class App extends React.Component<AppProps, any> {
     return (
       <div>
         <Welcome
-        name={this.props.app.name}
-        onChangeName={this.handleChangeName.bind(this)}
+          name={this.props.app.name}
+          onChangeName={this.handleChangeName}
         />
       </div>
     );

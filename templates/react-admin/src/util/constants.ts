@@ -14,4 +14,4 @@ export const FORMITEMLAYOUT_WIDTHOUTLABEL = {
   wrapperCol: { span: 14, offset: 4 },
 };
 /** 时间格式 */
-export var DATETIME_FORMAT = 'YYYY-MM-DD HH:mm:ss';
+export const DATETIME_FORMAT = 'YYYY-MM-DD HH:mm:ss';

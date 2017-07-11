@@ -194,20 +194,20 @@ class Main extends React.Component<MainProps, any> {
       let backButton = null;
       if (currentBackComponent) {
         backButton = (
-          <Button type="primary" onClick={() => {this.handleBack(currentBackComponent);}}>返回</Button>
+          <Button type="primary" onClick={() => { this.handleBack(currentBackComponent); }}>返回</Button>
         );
       }
       const operations = (
         <div className="main-tab-operation">
           {backButton}
-          <Button onClick={this.handleRemoveOthers.bind(this)}>关闭其他</Button>
-          <Button onClick={this.handleRefresh.bind(this)}>刷新</Button>
+          <Button onClick={this.handleRemoveOthers}>关闭其他</Button>
+          <Button onClick={this.handleRefresh}>刷新</Button>
         </div>
       );
       return (
         <Tabs
           className={`${prefixCls}-tabs`}
-          hideAdd={true}
+          hideAdd
           type="editable-card"
           activeKey={activePath}
           animated={false}
@@ -216,7 +216,7 @@ class Main extends React.Component<MainProps, any> {
           tabBarExtraContent={operations}
         >
         {this.panes}
-      </Tabs>
+        </Tabs>
       );
     }else {
       return <Home />;

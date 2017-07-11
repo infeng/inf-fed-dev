@@ -18,7 +18,7 @@ export const actions = simpleActions.actions;
 
 export interface <%= componentName %>State {
   name: string;
-};
+}
 
 export const reducer = handleActions<<%= componentName %>State, any>({
   [actionNames.changeName](state, action) {

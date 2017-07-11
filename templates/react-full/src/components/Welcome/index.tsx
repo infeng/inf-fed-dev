@@ -7,7 +7,7 @@ export interface WelcomeProps {
 }
 
 class Welcome extends React.Component<WelcomeProps, any> {
-  handleChange(e) {
+  handleChange = (e) => {
     this.props.onChangeName(e.target.value);
   }
 
@@ -16,8 +16,8 @@ class Welcome extends React.Component<WelcomeProps, any> {
       <div>
         <p>Hello <span className="name">{this.props.name}</span>!</p>
         <input
-        onChange={this.handleChange.bind(this)}
-        value={this.props.name}
+          onChange={this.handleChange}
+          value={this.props.name}
         />
       </div>
     );

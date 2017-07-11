@@ -10,7 +10,7 @@ interface Redirect {
 }
 
 export interface ApiConfig {
-  /** 
+  /**
    * path (also use as action name)
    */
   path: string;
@@ -26,7 +26,7 @@ export interface ApiConfig {
    * Determine whether redirect other route when request success
    */
   redirect?: Redirect;
-  /** 
+  /**
    * action name
    */
   actionName: string;
@@ -122,10 +122,10 @@ function makeActionNames(modelName: string, api: ApiConfig): ApiActionNames {
 
 function makeEffect(api: ApiConfig, request: any, actionNames: ApiActionNames) {
   return function*(req) {
-    const {except, ...others} = req.payload;
+    const { except, ...others } = req.payload;
     try {
       const response = yield call(request, others);
-      yield put(createAction(actionNames.success)({
+      yield put(createAction<any>(actionNames.success)({
         req: req.payload,
         res: response,
       }));
@@ -134,7 +134,7 @@ function makeEffect(api: ApiConfig, request: any, actionNames: ApiActionNames) {
       console.error(`request /${api.path} 错误`);
       console.error(`request params`, req.payload);
       console.error(`message`, error);
-      yield put(createAction(actionNames.error)({
+      yield put(createAction<any>(actionNames.error)({
         req: req.payload,
         error: error,
         except: Object.assign({}, except),
@@ -158,11 +158,11 @@ function showMessage(actionNames: ApiActionNames, apiSaga: any, message: string 
       const req = yield take(actionNames.request);
       const res = yield call(apiSaga, req);
       if (res) {
-        let showMessage = 'request success';
+        let text = 'request success';
         if (typeof message === 'string') {
-          showMessage = message;
+          text = message;
         }
-        console.log(showMessage);
+        console.log(text);
       }
     }
   };

@@ -120,7 +120,7 @@ export function getInitializeState<T>(): ListState<T> {
 export function makeListHandleActions<T>(listActionName: any): {
   handleActions: MakeHandleActionsResult,
   initializeState: ListState<T>;
-}
+};
 export function makeListHandleActions<I>(listActionName: any, apiPath: keyof I): {
   handleActions: MakeHandleActionsResult,
   initializeState: I;
