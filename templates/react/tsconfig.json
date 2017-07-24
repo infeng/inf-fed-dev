@@ -6,7 +6,11 @@
     "sourceMap": true,
     "removeComments": false,
     "allowSyntheticDefaultImports": true,
-    "experimentalDecorators": true
+    "experimentalDecorators": true,
+    "plugins": [
+      { "name": "tslint-language-service"}
+    ],
+    "noUnusedLocals": true    
   },
   "incluse": [
     "src/**/*"

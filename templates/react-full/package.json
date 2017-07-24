@@ -5,9 +5,10 @@
   "main": "dist/index",
   "scripts": {
     "start": "dora --port 8001 --plugins \"proxy,webpack,webpack-hmr,browser-history?index=/src/entries/index.html\"",
-    "lint": "tslint -c tslint.json 'src/**/*.ts' 'src/**/*.tsx'",
+    "lint": "npm run lib && tslint -c tslint.json 'src/**/*.ts' 'src/**/*.tsx'",
     "build": "export ENV=production && atool-build",
-    "lib": "rm -rf tslib && tsc --outDir tslib"
+    "lib": "rm -rf tslib && tsc --outDir tslib",
+    "lint-staged": "lint-staged"
   },
   "keywords": [
     "react",
@@ -48,12 +49,23 @@
     "tslint-eslint-rules": "^4.1.1",
     "tslint-react": "^3.0.0",
     "tsutils": "^2.6.0",
-    "typescript": "^2.1.4",
+    "typescript": "^2.4.2",
     "webpack": "^1.13.2"
   },
   "devDependencies": {
     "bluebird": "^3.4.7",
     "commander": "^2.9.0",
-    "ejs": "^2.5.5"
+    "ejs": "^2.5.5",
+    "lint-staged": "^4.0.2",
+    "pre-commit": "^1.2.2",
+    "tslint-language-service": "^0.9.6"    
+  },
+  "pre-commit": [
+    "lint-staged"
+  ],
+  "lint-staged": {
+    "src/**/*.{ts,tsx}": [
+      "lint"
+    ]
   }
 }

@@ -4,7 +4,11 @@
     "moduleResolution": "node",
     "jsx": "preserve",
     "sourceMap": true,
-    "removeComments": false
+    "removeComments": false,
+    "plugins": [
+      { "name": "tslint-language-service"}
+    ],
+    "noUnusedLocals": true    
   },
   "incluse": [
     "src/**/*"

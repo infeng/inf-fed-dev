@@ -5,7 +5,7 @@
   "main": "dist/index",
   "scripts": {
     "start": "dora --port 8001 --plugins \"webpack,webpack-hmr,browser-history?index=/demo/index.html\"",
-    "lint": "tslint -c tslint.json src/**/*.ts src/**/*.tsx",
+    "lint": "npm run lib && tslint -c tslint.json src/**/*.ts src/**/*.tsx",
     "build": "export ENV=production && atool-build",
     "lib": "rm -rf tslib && tsc --outDir tslib"
   },
@@ -32,5 +32,18 @@
     "webpack": "^1.13.2",
     "tslint": "^3.15.1",
     "typescript": "^2.1.4"
-  }
+  },
+  "devDependencies": {
+    "lint-staged": "^4.0.2",
+    "pre-commit": "^1.2.2",
+    "tslint-language-service": "^0.9.6"    
+  },  
+  "pre-commit": [
+    "lint-staged"
+  ],
+  "lint-staged": {
+    "src/**/*.{ts,tsx}": [
+      "lint"
+    ]
+  }  
 }

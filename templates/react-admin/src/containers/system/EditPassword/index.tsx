@@ -4,7 +4,6 @@ const FormItem = Form.Item;
 import CardEx from '../../common/CardEx';
 import { WrappedFormUtils } from 'antd/lib/form/Form';
 import { EditPasswordState, apiActions } from '../../../models/system/editPassword';
-import { connect } from 'react-redux';
 import { FORMITEMLAYOUT, FORMITEMLAYOUT_WIDTHOUTLABEL } from '../../../util/constants';
 import { Field } from '../../../util/baseDecorator';
 import { injectApi, ApiComponentProps } from '../../../util/inject';
